@@ -434,7 +434,7 @@ public class ContainerShop implements Shop{
 		if(Util.isLoaded(this.getLocation()) == false) return;
 		
 		String[] lines = new String[4];
-		lines[0] = ChatColor.DARK_RED + owner.substring(0, Math.min(owner.length(), 13));
+		lines[0] = getOwnerLine();
 		if(this.isBuying()){
 			lines[1] = MsgUtil.getMessage("signs.buying", ""+this.getRemainingSpace());
 		}
@@ -446,6 +446,14 @@ public class ContainerShop implements Shop{
 		this.setSignText(lines);
 	}
 	
+	/**
+	 * Returns the line for the owner text
+	 * @return the line for the owner text
+	 */
+	private String getOwnerLine() {
+		return ChatColor.DARK_RED + owner.substring(0, Math.min(owner.length(), 13));
+	}
+
 	/**
 	 * Changes all lines of text on a sign near the shop
 	 * @param lines The array of lines to change. Index is line number.
@@ -482,7 +490,7 @@ public class ContainerShop implements Shop{
 			if(!isAttached(b)) continue;
 			Sign sign = (Sign) b.getState();
 			
-			if(sign.getLine(0).contains("[QuickShop")){
+			if(sign.getLine(0).contains("[QuickShop") || sign.getLine(0).equals(getOwnerLine())){
 				signs.add(sign);
 			}
 			else{
