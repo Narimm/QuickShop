@@ -434,7 +434,7 @@ public class ContainerShop implements Shop{
 		if(Util.isLoaded(this.getLocation()) == false) return;
 		
 		String[] lines = new String[4];
-		lines[0] = ChatColor.RED + "[QuickShop]";
+		lines[0] = ChatColor.DARK_RED + owner.substring(0, Math.min(owner.length(), 13));
 		if(this.isBuying()){
 			lines[1] = MsgUtil.getMessage("signs.buying", ""+this.getRemainingSpace());
 		}
