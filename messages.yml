@@ -40,6 +40,7 @@ buying-more-than-selling: "&cWARNING: You are buying items for more than you are
 not-enough-space: "&cYou only have room for {0} more of that!"
 refill-success: "&aRefill success"
 empty-success: "&aEmpty success"
+container-too-small: "&cThis shop can't hold your emeralds/nuggets."
 
 menu:
     successful-purchase: "&aSuccessfully Purchased:"
