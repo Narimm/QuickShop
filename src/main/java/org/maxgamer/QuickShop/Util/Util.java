@@ -693,6 +693,31 @@ public class Util{
 			return "FIREWORK_STAR";
 		case 385:
 			return "FIREWORK_CHARGE";
+		case 2256:
+			return "13 Disc";
+		case 2257:
+			return "cat Disc";
+		case 2258:
+			return "blocks Disc";
+		case 2259:
+			return "chirp Disc";
+		case 2260:
+			return "far Disc";
+		case 2261:
+			return "mall Disc";
+		case 2262:
+			return "mellohi Disc";
+		case 2263:
+			return "stal Disc";
+		case 2264:
+			return "strad Disc";
+		case 2265:
+			return "ward Disc";
+		case 2266:
+			return "11 Disc";
+		case 2267:
+			return "wait Disc";
+			
 		}
 		
 		if(damage == 0 || isTool(mat)) return mat.toString();
