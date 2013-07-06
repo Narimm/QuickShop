@@ -490,7 +490,7 @@ public class ContainerShop implements Shop{
 			if(!isAttached(b)) continue;
 			Sign sign = (Sign) b.getState();
 			
-			if(sign.getLine(0).contains("[QuickShop") || sign.getLine(0).equals(getOwnerLine())){
+			if(sign.getLine(0).contains("[QuickShop") || sign.getLine(0).startsWith(ChatColor.DARK_RED + "")){
 				signs.add(sign);
 			}
 			else{
