@@ -641,6 +641,7 @@ public class Util{
 				case 14: return "PRIMED_TNT_EGG";
 				case 66: return "WITCH_EGG";
 				case 65: return "BAT_EGG";
+				case 100: return "HORSE_EGG";
 			}
 			return mat.toString();
 		case 397:
