@@ -11,50 +11,52 @@ import org.bukkit.event.HandlerList;
  * E.g. A player clicks a chest, this event is thrown, if successful,
  * the player is asked how much they wish to trade for.
  */
-public class ShopPreCreateEvent extends Event implements Cancellable{
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled;
-	
-	private Player p;
-	private Location loc;
-	
-	public ShopPreCreateEvent(Player p, Location loc){
-		this.loc = loc;
-		this.p = p;
-	}
-	
-	/**
-	 * The location of the shop that will be created.
-	 * @return The location of the shop that will be created. 
-	 */
-	public Location getLocation(){
-		return loc;
-	}
-	
-	/** 
-	 * The player who is creating this shop
-	 * @return The player who is creating this shop
-	 */
-	public Player getPlayer(){
-		return p;
-	}
-	
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-	
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+public class ShopPreCreateEvent extends Event implements Cancellable {
+    private static final HandlerList handlers = new HandlerList();
+    private boolean                  cancelled;
 
-	@Override
-	public boolean isCancelled() {
-		return this.cancelled;
-	}
+    private final Player             p;
+    private final Location           loc;
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;
-	}
+    public ShopPreCreateEvent(Player p, Location loc) {
+        this.loc = loc;
+        this.p = p;
+    }
+
+    /**
+     * The location of the shop that will be created.
+     * 
+     * @return The location of the shop that will be created.
+     */
+    public Location getLocation() {
+        return loc;
+    }
+
+    /**
+     * The player who is creating this shop
+     * 
+     * @return The player who is creating this shop
+     */
+    public Player getPlayer() {
+        return p;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return ShopPreCreateEvent.handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return ShopPreCreateEvent.handlers;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

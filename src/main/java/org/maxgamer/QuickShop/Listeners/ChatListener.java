@@ -9,19 +9,21 @@ import org.maxgamer.QuickShop.QuickShop;
 /**
  * 
  * @author Netherfoam
- *
+ * 
  */
-public class ChatListener implements Listener{
-	QuickShop plugin;
-	
-	public ChatListener(QuickShop plugin){
-		this.plugin = plugin;
-	}
-	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-	public void onChat(final AsyncPlayerChatEvent e){
-		if(!plugin.getShopManager().getActions().containsKey(e.getPlayer().getName())) return;
-		plugin.getShopManager().handleChat(e.getPlayer(), e.getMessage());
-		e.setCancelled(true);
-	}
+public class ChatListener implements Listener {
+    QuickShop plugin;
+
+    public ChatListener(QuickShop plugin) {
+        this.plugin = plugin;
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onChat(final AsyncPlayerChatEvent e) {
+        if (!plugin.getShopManager().getActions().containsKey(e.getPlayer().getName())) {
+            return;
+        }
+        plugin.getShopManager().handleChat(e.getPlayer(), e.getMessage());
+        e.setCancelled(true);
+    }
 }
