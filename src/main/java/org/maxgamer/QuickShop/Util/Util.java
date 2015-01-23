@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -353,41 +352,6 @@ public class Util {
         return item;
     }
 
-    /**
-     * Converts the given ItemStack into a compound NBT tag, then the tag to an
-     * archived byte[], then the byte[] to a String using ISO-LATIN-1. Then
-     * returns the string.
-     * 
-     * @param i
-     *            The itemstack to serialize
-     * @return The String representing the item
-     * @throws UnsupportedEncodingException
-     *             If the system does not have ISO-LATIN-1 installed as an
-     *             encoding
-     * @throws ClassNotFoundException
-     *             If the server is not v1_4_6.
-     */
-    public static String getNBTString(ItemStack i) throws UnsupportedEncodingException, ClassNotFoundException {
-        final byte[] bytes = Util.getNBTBytes(i);
-        return new String(bytes, Util.charset);
-    }
-
-    public static byte[] getNBTBytes(ItemStack i) throws ClassNotFoundException {
-        return NMS.getNBTBytes(i);
-    }
-
-    /**
-     * Reverses the effects of Util.getNBTString(ItemStack).
-     * 
-     * @param nbt
-     *            The output of Util.getNBTString(ItemStack)
-     * @return The input of Util.getNBTString(ItemStack)
-     *         This method should not be used, except for conversions now.
-     */
-    public static ItemStack getItemStack(String nbt) throws UnsupportedEncodingException, ClassNotFoundException {
-        return Util.getItemStack((nbt.getBytes(Util.charset)));
-    }
-
     public static String serialize(ItemStack iStack) {
         final YamlConfiguration cfg = new YamlConfiguration();
         cfg.set("item", iStack);
@@ -399,20 +363,6 @@ public class Util {
         cfg.loadFromString(config);
         final ItemStack stack = cfg.getItemStack("item");
         return stack;
-    }
-
-    /**
-     * Converts the given byte representation of an NBT tag into an ItemStack.
-     * 
-     * @param bytes
-     *            The array of bytes that represent a compressed NBT itemstac.
-     * @return The ItemStack represented by bytes.
-     * @throws ClassNotFoundException
-     *             If this version of QuickShop is not compatible with the
-     *             version of bukkit (net.minecraft.server.v1_4_6)
-     */
-    public static ItemStack getItemStack(byte[] bytes) throws ClassNotFoundException {
-        return NMS.getItemStack(bytes);
     }
 
     /**

@@ -1,11 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.mabako.minecraft</groupId>
+	<groupId>au.com.addstar</groupId>
 	<artifactId>quickshop</artifactId>
 	<version>4.5.3</version>
 	<name>QuickShop</name>
-	<url>https://github.com/mabako-mc/QuickShop-gfs</url>
 
 	<repositories>
 		<repository>
@@ -13,14 +12,20 @@
 			<name>local repo</name>
 			<url>${project.baseUri}libs</url>
 		</repository>
+		
+		<!-- For bukkit -->
 		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
 		</repository>
+		
+		<!-- For Vault -->
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
 		</repository>
+		
+		<!-- For Spout -->
 		<repository>
 			<id>spout-repo</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -28,26 +33,44 @@
 	</repositories>
 
 	<dependencies>
+		<!-- Bukkit -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.7.5-R0.1-SNAPSHOT</version>
+			<version>1.8-R0.1-SNAPSHOT</version>
 			<type>jar</type>
+			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.7.5-R0.1-SNAPSHOT</version>
-			<type>jar</type>
-		</dependency>
+		
+		<!-- Spout -->
 		<dependency>
 			<groupId>org.spoutcraft</groupId>
 			<artifactId>spoutcraftplugin</artifactId>
 			<version>1.6.4-R2.1-SNAPSHOT</version>
+			<optional>true</optional>
 		</dependency>
+		
+		<!-- Vault -->
+		<dependency>
+	      <groupId>net.milkbowl.vault</groupId>
+	      <artifactId>Vault</artifactId>
+	      <version>1.4.1</version>
+	      <exclusions>
+	        <exclusion>
+	          <groupId>org.bukkit</groupId>
+	          <artifactId>bukkit</artifactId>
+	        </exclusion>
+	        <exclusion>
+	          <groupId>org.bukkit</groupId>
+	          <artifactId>craftbukkit</artifactId>
+	        </exclusion>
+	      </exclusions>
+	      <optional>true</optional>
+	    </dependency>
 	</dependencies>
 
 	<build>
+		<finalName>QuickShop</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

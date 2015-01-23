@@ -1,14 +1,17 @@
 package org.maxgamer.QuickShop.Shop;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Util.NMS;
 
 /**
  * @author Netherfoam
@@ -52,13 +55,11 @@ public class DisplayItem {
         if (QuickShop.instance.debug) {
             System.out.println("Spawned item. Safeguarding.");
         }
-        try {
-            NMS.safeGuard(item);
-        } catch (final Exception e) {
-            e.printStackTrace();
-            System.out
-                    .println("QuickShop version mismatch! This version of QuickShop is incompatible with this version of bukkit! Try update?");
-        }
+        
+        ItemMeta meta = iStack.getItemMeta();
+        meta.setDisplayName("quickshop");
+        meta.setLore(Arrays.asList(UUID.randomUUID().toString()));
+        iStack.setItemMeta(meta);
     }
 
     /**
