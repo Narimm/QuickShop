@@ -1,8 +1,8 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.List;
-
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -74,10 +74,10 @@ public interface Shop {
     public short getDurability();
 
     /**
-     * @return The name of the player who owns the shop.
+     * @return The player who owns the shop.
      */
-    public String getOwner();
-
+    public OfflinePlayer getOwner();
+    
     /**
      * @return Returns a dummy itemstack of the item this shop is selling.
      */
@@ -133,10 +133,10 @@ public interface Shop {
      * Changes the owner of this shop to the given player.
      * 
      * @param owner
-     *            The name of the owner.
+     * 			  The new owner
      *            You must do shop.update() after to save it after a reboot.
      */
-    public void setOwner(String owner);
+    public void setOwner(OfflinePlayer owner);
 
     public void setUnlimited(boolean unlimited);
 

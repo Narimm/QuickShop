@@ -68,7 +68,7 @@ public class BlockListener implements Listener {
             }
 
             // If they're either survival or the owner, they can break it
-            if (p.getGameMode() == GameMode.CREATIVE && !p.getName().equalsIgnoreCase(shop.getOwner())) {
+            if (p.getGameMode() == GameMode.CREATIVE && !p.equals(shop.getOwner().getPlayer())) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-creative-break"));
                 return;
@@ -89,7 +89,7 @@ public class BlockListener implements Listener {
 
             // If they're in creative and not the owner, don't let them
             // (accidents happen)
-            if (p.getGameMode() == GameMode.CREATIVE && !p.getName().equalsIgnoreCase(shop.getOwner())) {
+            if (p.getGameMode() == GameMode.CREATIVE && !p.equals(shop.getOwner().getPlayer())) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-creative-break"));
                 return;

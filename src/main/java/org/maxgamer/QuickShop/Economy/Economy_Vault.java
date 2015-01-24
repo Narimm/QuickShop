@@ -1,6 +1,7 @@
 package org.maxgamer.QuickShop.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 public class Economy_Vault implements EconomyCore {
     private net.milkbowl.vault.economy.Economy vault;
@@ -30,17 +31,17 @@ public class Economy_Vault implements EconomyCore {
     }
 
     @Override
-    public boolean deposit(String name, double amount) {
-        return vault.depositPlayer(name, amount).transactionSuccess();
+    public boolean deposit(OfflinePlayer player, double amount) {
+        return vault.depositPlayer(player, amount).transactionSuccess();
     }
 
     @Override
-    public boolean withdraw(String name, double amount) {
-        return vault.withdrawPlayer(name, amount).transactionSuccess();
+    public boolean withdraw(OfflinePlayer player, double amount) {
+        return vault.withdrawPlayer(player, amount).transactionSuccess();
     }
 
     @Override
-    public boolean transfer(String from, String to, double amount) {
+    public boolean transfer(OfflinePlayer from, OfflinePlayer to, double amount) {
         if (vault.getBalance(from) >= amount) { // Does the payer have enough
                                                 // money?
             if (vault.withdrawPlayer(from, amount).transactionSuccess()) { // Try
@@ -71,8 +72,8 @@ public class Economy_Vault implements EconomyCore {
     }
 
     @Override
-    public double getBalance(String name) {
-        return vault.getBalance(name);
+    public double getBalance(OfflinePlayer player) {
+        return vault.getBalance(player);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.maxgamer.QuickShop.Economy;
 
+import org.bukkit.OfflinePlayer;
+
 /**
  * @author netherfoam
  *         Represents an economy.
@@ -21,7 +23,7 @@ public interface EconomyCore {
      *            The amount to give them
      * @return True if success (Should be almost always)
      */
-    public boolean deposit(String name, double amount);
+    public boolean deposit(OfflinePlayer player, double amount);
 
     /**
      * Withdraws a given amount of money from the given username and turns it to
@@ -33,7 +35,7 @@ public interface EconomyCore {
      *            The amount to take from them
      * @return True if success, false if they didn't have enough cash
      */
-    public boolean withdraw(String name, double amount);
+    public boolean withdraw(OfflinePlayer player, double amount);
 
     /**
      * Transfers the given amount of money from Player1 to Player2
@@ -47,7 +49,7 @@ public interface EconomyCore {
      * @return true if success (Payer had enough cash, receiver was able to
      *         receive the funds)
      */
-    public boolean transfer(String from, String to, double amount);
+    public boolean transfer(OfflinePlayer from, OfflinePlayer to, double amount);
 
     /**
      * Fetches the balance of the given account name
@@ -56,7 +58,7 @@ public interface EconomyCore {
      *            The name of the account
      * @return Their current balance.
      */
-    public double getBalance(String name);
+    public double getBalance(OfflinePlayer player);
 
     /**
      * Formats the given number... E.g. 50.5 becomes $50.5 Dollars, or 50

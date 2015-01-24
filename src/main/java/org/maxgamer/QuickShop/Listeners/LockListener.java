@@ -48,7 +48,7 @@ public class LockListener implements Listener {
             }
         }
 
-        if (!shop.getOwner().equalsIgnoreCase(p.getName())) {
+        if (!p.equals(shop.getOwner().getPlayer())) {
             if (p.hasPermission("quickshop.other.open")) {
                 p.sendMessage(MsgUtil.getMessage("bypassing-lock"));
                 return;
@@ -92,7 +92,7 @@ public class LockListener implements Listener {
             }
         }
 
-        if (p.getName().equalsIgnoreCase(shop.getOwner()) == false) {
+        if (!p.equals(shop.getOwner().getPlayer())) {
             if (p.hasPermission("quickshop.other.open")) {
                 p.sendMessage(MsgUtil.getMessage("bypassing-lock"));
                 return;
@@ -119,7 +119,7 @@ public class LockListener implements Listener {
             }
 
             // If they owned it or have bypass perms, they can destroy it
-            if (!shop.getOwner().equalsIgnoreCase(p.getName()) && !p.hasPermission("quickshop.other.destroy")) {
+            if (!p.equals(shop.getOwner().getPlayer()) && !p.hasPermission("quickshop.other.destroy")) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-permission"));
                 return;
@@ -136,7 +136,7 @@ public class LockListener implements Listener {
 
             // If they're the shop owner or have bypass perms, they can destroy
             // it.
-            if (!shop.getOwner().equalsIgnoreCase(p.getName()) && !p.hasPermission("quickshop.other.destroy")) {
+            if (!p.equals(shop.getOwner().getPlayer()) && !p.hasPermission("quickshop.other.destroy")) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-permission"));
                 return;

@@ -247,7 +247,7 @@ public class ShopManager {
             int owned = 0;
             final Iterator<Shop> it = getShopIterator();
             while (it.hasNext()) {
-                if (it.next().getOwner().equalsIgnoreCase(p.getName())) {
+                if (p.equals(it.next().getOwner().getPlayer())) {
                     owned++;
                 }
             }
@@ -337,13 +337,13 @@ public class ShopManager {
 
                         // Tax refers to the cost to create a shop. Not actual
                         // tax, that would be silly
-                        if (tax != 0 && plugin.getEcon().getBalance(p.getName()) < tax) {
+                        if (tax != 0 && plugin.getEcon().getBalance(p) < tax) {
                             p.sendMessage(MsgUtil.getMessage("you-cant-afford-a-new-shop", format(tax)));
                             return;
                         }
 
                         // Create the sample shop.
-                        final Shop shop = new ContainerShop(info.getLocation(), price, info.getItem(), p.getName());
+                        final Shop shop = new ContainerShop(info.getLocation(), price, info.getItem(), p.getUniqueId());
                         shop.onLoad();
 
                         final ShopCreateEvent e = new ShopCreateEvent(shop, p);
@@ -357,13 +357,13 @@ public class ShopManager {
                         // Else, if the event is cancelled, they won't get their
                         // money back.
                         if (tax != 0) {
-                            if (!plugin.getEcon().withdraw(p.getName(), tax)) {
+                            if (!plugin.getEcon().withdraw(p, tax)) {
                                 p.sendMessage(MsgUtil.getMessage("you-cant-afford-a-new-shop", format(tax)));
                                 shop.onUnload();
                                 return;
                             }
 
-                            plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), tax);
+                            plugin.getEcon().deposit(plugin.getTaxAccount(), tax);
                         }
 
                         /* The shop has hereforth been successfully created */
@@ -505,10 +505,10 @@ public class ShopManager {
                         if (true) {
                             // Check their balance. Works with *most* economy
                             // plugins*
-                            if (plugin.getEcon().getBalance(p.getName()) < amount * shop.getPrice()) {
+                            if (plugin.getEcon().getBalance(p) < amount * shop.getPrice()) {
                                 p.sendMessage(MsgUtil.getMessage("you-cant-afford-to-buy",
                                         format(amount * shop.getPrice()),
-                                        format(plugin.getEcon().getBalance(p.getName()))));
+                                        format(plugin.getEcon().getBalance(p))));
                                 return;
                             }
 
@@ -518,10 +518,10 @@ public class ShopManager {
                             final double tax = plugin.getConfig().getDouble("tax");
                             final double total = amount * shop.getPrice();
 
-                            if (!plugin.getEcon().withdraw(p.getName(), total)) {
+                            if (!plugin.getEcon().withdraw(p, total)) {
                                 p.sendMessage(MsgUtil.getMessage("you-cant-afford-to-buy",
                                         format(amount * shop.getPrice()),
-                                        format(plugin.getEcon().getBalance(p.getName()))));
+                                        format(plugin.getEcon().getBalance(p))));
                                 return;
                             }
 
@@ -533,15 +533,14 @@ public class ShopManager {
                                     // given that 100x minor = 1 major currency.
                                     if (!depositInInventory(cs.getInventory(), (int) Math.floor(total * 100))) {
                                         p.sendMessage(MsgUtil.getMessage("container-too-small"));
-                                        plugin.getEcon().deposit(p.getName(), total);
+                                        plugin.getEcon().deposit(p, total);
                                         return;
                                     }
                                 } else {
                                     plugin.getEcon().deposit(shop.getOwner(), total * (1 - tax));
 
                                     if (tax != 0) {
-                                        plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"),
-                                                total * tax);
+                                        plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
                                     }
                                 }
                             }
@@ -605,7 +604,7 @@ public class ShopManager {
                         }
 
                         // Money handling
-                        if (!p.getName().equalsIgnoreCase(shop.getOwner())) {
+                        if (!p.equals(shop.getOwner().getPlayer())) {
                             // Don't tax them if they're purchasing from
                             // themselves.
                             // Do charge an amount of tax though.
@@ -631,11 +630,11 @@ public class ShopManager {
                                 }
 
                                 if (tax != 0) {
-                                    plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), total * tax);
+                                    plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
                                 }
                             }
                             // Give them the money after we know we succeeded
-                            plugin.getEcon().deposit(p.getName(), total * (1 - tax));
+                            plugin.getEcon().deposit(p, total * (1 - tax));
 
                             // Notify the owner of the purchase.
                             String msg = MsgUtil.getMessage("player-sold-to-your-store", p.getName(), "" + amount,

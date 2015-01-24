@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -71,7 +72,7 @@ public class QS implements CommandExecutor {
             final Block b = bIt.next();
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
             if (shop != null) {
-                if (shop.getOwner().equalsIgnoreCase(p.getName())) {
+                if (p.equals(shop.getOwner().getPlayer())) {
                     shop.delete();
                     sender.sendMessage(ChatColor.GREEN + "Success. Deleted shop.");
                 } else {
@@ -151,15 +152,21 @@ public class QS implements CommandExecutor {
                 sender.sendMessage(MsgUtil.getMessage("command.no-owner-given"));
                 return;
             }
+            
+            OfflinePlayer newOwner = Bukkit.getOfflinePlayer(args[1]);
+            if (!newOwner.hasPlayedBefore()) {
+                sender.sendMessage(MsgUtil.getMessage("command.unknown-owner-given"));
+                return;
+            }
             final BlockIterator bIt = new BlockIterator((Player) sender, 10);
             while (bIt.hasNext()) {
                 final Block b = bIt.next();
                 final Shop shop = plugin.getShopManager().getShop(b.getLocation());
                 if (shop != null) {
-                    shop.setOwner(args[1]);
+                    shop.setOwner(newOwner);
                     shop.update();
 
-                    sender.sendMessage(MsgUtil.getMessage("command.new-owner", shop.getOwner()));
+                    sender.sendMessage(MsgUtil.getMessage("command.new-owner", shop.getOwner().getName()));
                     return;
                 }
             }
@@ -295,7 +302,7 @@ public class QS implements CommandExecutor {
             while (bIt.hasNext()) {
                 final Block b = bIt.next();
                 final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-                if (shop != null && shop.getOwner().equalsIgnoreCase(((Player) sender).getName())) {
+                if (shop != null && sender.equals(shop.getOwner().getPlayer())) {
                     shop.setShopType(ShopType.BUYING);
                     shop.setSignText();
                     shop.update();
@@ -317,7 +324,7 @@ public class QS implements CommandExecutor {
             while (bIt.hasNext()) {
                 final Block b = bIt.next();
                 final Shop shop = plugin.getShopManager().getShop(b.getLocation());
-                if (shop != null && shop.getOwner().equalsIgnoreCase(((Player) sender).getName())) {
+                if (shop != null && sender.equals(shop.getOwner().getPlayer())) {
                     shop.setShopType(ShopType.SELLING);
                     shop.setSignText();
                     shop.update();
@@ -353,7 +360,7 @@ public class QS implements CommandExecutor {
             double fee = 0;
             if (plugin.priceChangeRequiresFee) {
                 fee = plugin.getConfig().getDouble("shop.fee-for-price-change");
-                if (fee > 0 && plugin.getEcon().getBalance(sender.getName()) < fee) {
+                if (fee > 0 && plugin.getEcon().getBalance((Player)sender) < fee) {
                     sender.sendMessage(MsgUtil.getMessage("you-cant-afford-to-change-price",
                             plugin.getEcon().format(fee)));
                     return;
@@ -366,16 +373,14 @@ public class QS implements CommandExecutor {
                 final Block b = bIt.next();
                 final Shop shop = plugin.getShopManager().getShop(b.getLocation());
 
-                if (shop != null
-                        && (shop.getOwner().equalsIgnoreCase(((Player) sender).getName()) || sender
-                                .hasPermission("quickshop.other.price"))) {
+                if (shop != null && (sender.equals(shop.getOwner().getPlayer()) || sender.hasPermission("quickshop.other.price"))) {
                     if (shop.getPrice() == price) {
                         // Stop here if there isn't a price change
                         sender.sendMessage(MsgUtil.getMessage("no-price-change"));
                         return;
                     }
                     if (fee > 0) {
-                        if (!plugin.getEcon().withdraw(sender.getName(), fee)) {
+                        if (!plugin.getEcon().withdraw((Player)sender, fee)) {
                             sender.sendMessage(MsgUtil.getMessage("you-cant-afford-to-change-price", plugin.getEcon()
                                     .format(fee)));
                             return;
@@ -383,7 +388,7 @@ public class QS implements CommandExecutor {
 
                         sender.sendMessage(MsgUtil.getMessage("fee-charged-for-price-change",
                                 plugin.getEcon().format(fee)));
-                        plugin.getEcon().deposit(plugin.getConfig().getString("tax-account"), fee);
+                        plugin.getEcon().deposit(plugin.getTaxAccount(), fee);
                     }
 
                     // Update the shop

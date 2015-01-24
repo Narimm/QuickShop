@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -57,9 +58,10 @@ public class DisplayItem {
         }
         
         ItemMeta meta = iStack.getItemMeta();
-        meta.setDisplayName("quickshop");
+        meta.setDisplayName(ChatColor.RED + "QuickShop ");
         meta.setLore(Arrays.asList(UUID.randomUUID().toString()));
         iStack.setItemMeta(meta);
+        item.setPickupDelay(Integer.MAX_VALUE);
     }
 
     /**
@@ -95,8 +97,8 @@ public class DisplayItem {
 
             if (eLoc.equals(displayLoc) || eLoc.equals(shop.getLocation())) {
                 final ItemStack near = ((Item) e).getItemStack();
-                // if its the same its a dupe
-                if (shop.matches(near)) {
+                // Do a rough match as to remove the old type of item
+                if (shop.getItem().getType() == near.getType() && shop.getItem().getDurability() == near.getDurability()) {
                     e.remove();
                     removed = true;
                     if (qs.debug) {

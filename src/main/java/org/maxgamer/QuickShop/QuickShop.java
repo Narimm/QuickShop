@@ -12,10 +12,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -98,6 +100,7 @@ public class QuickShop extends JavaPlugin {
     public boolean                         priceChangeRequiresFee = false;
     /** Whether or not to limit players shop amounts */
     public boolean                         limit                  = false;
+    private UUID                           taxAccountId           = null;
 
     private final HashMap<String, Integer> limits                 = new HashMap<String, Integer>();
 
@@ -238,7 +241,7 @@ public class QuickShop extends JavaPlugin {
 
                     final ItemStack item = Util.deserialize(rs.getString("itemConfig"));
 
-                    final String owner = rs.getString("owner");
+                    final UUID owner = UUID.fromString(rs.getString("ownerId"));
                     final double price = rs.getDouble("price");
                     final Location loc = new Location(world, x, y, z);
                     /* Skip invalid shops, if we know of any */
@@ -509,5 +512,17 @@ public class QuickShop extends JavaPlugin {
      */
     public ShopManager getShopManager() {
         return shopManager;
+    }
+    
+    public OfflinePlayer getTaxAccount() {
+        if (taxAccountId == null) {
+            try {
+                taxAccountId = UUID.fromString(getConfig().getString("tax-account"));
+            } catch (IllegalArgumentException e) {
+                taxAccountId = Bukkit.getOfflinePlayer(getConfig().getString("tax-account")).getUniqueId();
+            }
+        }
+        
+        return Bukkit.getOfflinePlayer(taxAccountId);
     }
 }

@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -22,7 +24,7 @@ import org.maxgamer.QuickShop.Shop.Shop;
 public class MsgUtil {
     private static QuickShop                           plugin;
     private static YamlConfiguration                   messages;
-    private static HashMap<String, LinkedList<String>> player_messages = new HashMap<String, LinkedList<String>>();
+    private static HashMap<UUID, LinkedList<String>>   player_messages = new HashMap<UUID, LinkedList<String>>();
 
     static {
         MsgUtil.plugin = QuickShop.instance;
@@ -64,11 +66,19 @@ public class MsgUtil {
             while (rs.next()) {
                 final String owner = rs.getString("owner");
                 final String message = rs.getString("message");
+                
+                UUID id;
+                try {
+                    id = UUID.fromString(owner);
+                } catch (IllegalArgumentException e) {
+                    // Just ignore the non converted ones
+                    continue;
+                }
 
-                LinkedList<String> msgs = MsgUtil.player_messages.get(owner);
+                LinkedList<String> msgs = MsgUtil.player_messages.get(id);
                 if (msgs == null) {
                     msgs = new LinkedList<String>();
-                    MsgUtil.player_messages.put(owner, msgs);
+                    MsgUtil.player_messages.put(id, msgs);
                 }
 
                 msgs.add(message);
@@ -89,22 +99,19 @@ public class MsgUtil {
      *            database.
      */
     @SuppressWarnings("deprecation")
-    public static void send(String player, String message) {
-        final Player p = Bukkit.getPlayerExact(player);
-        if (p == null) {
-            player = player.toLowerCase();
-
+    public static void send(OfflinePlayer player, String message) {
+        if (!player.isOnline()) {
             LinkedList<String> msgs = MsgUtil.player_messages.get(player);
             if (msgs == null) {
                 msgs = new LinkedList<String>();
-                MsgUtil.player_messages.put(player, msgs);
+                MsgUtil.player_messages.put(player.getUniqueId(), msgs);
             }
             msgs.add(message);
 
             final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
-            MsgUtil.plugin.getDB().execute(q, player, message, System.currentTimeMillis());
+            MsgUtil.plugin.getDB().execute(q, player.getUniqueId(), message, System.currentTimeMillis());
         } else {
-            p.sendMessage(message);
+            player.getPlayer().sendMessage(message);
         }
     }
 
@@ -130,15 +137,14 @@ public class MsgUtil {
      */
     public static boolean flush(Player p) {
         if (p != null && p.isOnline()) {
-            final String pName = p.getName().toLowerCase();
-            final LinkedList<String> msgs = MsgUtil.player_messages.get(pName);
+            final LinkedList<String> msgs = MsgUtil.player_messages.get(p.getUniqueId());
 
             if (msgs != null) {
                 for (final String msg: msgs) {
                     p.sendMessage(msg);
                 }
 
-                MsgUtil.plugin.getDB().execute("DELETE FROM messages WHERE owner = ?", pName);
+                MsgUtil.plugin.getDB().execute("DELETE FROM messages WHERE owner = ?", p.getUniqueId());
                 msgs.clear();
             }
 
@@ -159,7 +165,7 @@ public class MsgUtil {
 
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
         p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.shop-information"));
-        p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.owner", shop.getOwner()));
+        p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.owner", shop.getOwner().getName()));
         p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.item", shop.getDataName()));
 
         if (Util.isTool(items.getType())) {
@@ -284,7 +290,7 @@ public class MsgUtil {
             final double tax = MsgUtil.plugin.getConfig().getDouble("tax");
             final double total = amount * shop.getPrice();
             if (tax != 0) {
-                if (!p.getName().equalsIgnoreCase(shop.getOwner())) {
+                if (!p.equals(shop.getOwner().getPlayer())) {
                     p.sendMessage(ChatColor.DARK_PURPLE + "| "
                             + MsgUtil.getMessage("menu.sell-tax", "" + Util.format((tax * total))));
                 } else {

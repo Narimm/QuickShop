@@ -1,5 +1,7 @@
 package org.maxgamer.QuickShop.Economy;
 
+import org.bukkit.OfflinePlayer;
+
 public class Economy implements EconomyCore {
     private final EconomyCore core;
 
@@ -27,8 +29,8 @@ public class Economy implements EconomyCore {
      * @return True if success (Should be almost always)
      */
     @Override
-    public boolean deposit(String name, double amount) {
-        return core.deposit(name, amount);
+    public boolean deposit(OfflinePlayer player, double amount) {
+        return core.deposit(player, amount);
     }
 
     /**
@@ -42,8 +44,8 @@ public class Economy implements EconomyCore {
      * @return True if success, false if they didn't have enough cash
      */
     @Override
-    public boolean withdraw(String name, double amount) {
-        return core.withdraw(name, amount);
+    public boolean withdraw(OfflinePlayer player, double amount) {
+        return core.withdraw(player, amount);
     }
 
     /**
@@ -59,7 +61,7 @@ public class Economy implements EconomyCore {
      *         receive the funds)
      */
     @Override
-    public boolean transfer(String from, String to, double amount) {
+    public boolean transfer(OfflinePlayer from, OfflinePlayer to, double amount) {
         return core.transfer(from, to, amount);
     }
 
@@ -71,8 +73,8 @@ public class Economy implements EconomyCore {
      * @return Their current balance.
      */
     @Override
-    public double getBalance(String name) {
-        return core.getBalance(name);
+    public double getBalance(OfflinePlayer player) {
+        return core.getBalance(player);
     }
 
     /**
@@ -88,8 +90,8 @@ public class Economy implements EconomyCore {
         return core.format(balance);
     }
 
-    public boolean has(String name, double amount) {
-        return core.getBalance(name) >= amount;
+    public boolean has(OfflinePlayer player, double amount) {
+        return core.getBalance(player) >= amount;
     }
 
     @Override

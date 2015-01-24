@@ -3,12 +3,14 @@ package org.maxgamer.QuickShop.Shop;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
@@ -25,7 +27,7 @@ import org.maxgamer.QuickShop.Util.Util;
 public class ContainerShop implements Shop {
     private final Location  loc;
     private double          price;
-    private String          owner;
+    private UUID            ownerId;
     private final ItemStack item;
     private DisplayItem     displayItem;
     private boolean         unlimited;
@@ -54,7 +56,7 @@ public class ContainerShop implements Shop {
         loc = s.loc;
         plugin = s.plugin;
         unlimited = s.unlimited;
-        owner = s.owner;
+        ownerId = s.ownerId;
         price = s.price;
     }
 
@@ -71,10 +73,10 @@ public class ContainerShop implements Shop {
      * @param owner
      *            The player who owns this shop.
      */
-    public ContainerShop(Location loc, double price, ItemStack item, String owner) {
+    public ContainerShop(Location loc, double price, ItemStack item, UUID owner) {
         this.loc = loc;
         this.price = price;
-        this.owner = owner;
+        this.ownerId = owner;
         this.item = item.clone();
         plugin = (QuickShop) Bukkit.getPluginManager().getPlugin("QuickShop");
         this.item.setAmount(1);
@@ -246,8 +248,12 @@ public class ContainerShop implements Shop {
      * @return The name of the player who owns the shop.
      */
     @Override
-    public String getOwner() {
-        return owner;
+    public OfflinePlayer getOwner() {
+        return Bukkit.getOfflinePlayer(ownerId);
+    }
+    
+    public UUID getOwnerId() {
+        return ownerId;
     }
 
     /**
@@ -467,8 +473,8 @@ public class ContainerShop implements Shop {
      *            You must do shop.update() after to save it after a reboot.
      */
     @Override
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwner(OfflinePlayer owner) {
+        this.ownerId = owner.getUniqueId();
     }
 
     /**
@@ -545,7 +551,7 @@ public class ContainerShop implements Shop {
      * @return the line for the owner text
      */
     private String getOwnerLine() {
-        return ChatColor.DARK_RED + owner.substring(0, Math.min(owner.length(), 13));
+        return ChatColor.DARK_RED + getOwner().getName();
     }
 
     /**
@@ -733,6 +739,7 @@ public class ContainerShop implements Shop {
             }
             if (disItem.getItem() == null) {
                 disItem.spawn();
+                disItem.removeDupe();
                 return;
             }
 

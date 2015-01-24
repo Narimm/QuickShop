@@ -1,29 +1,18 @@
 package org.maxgamer.QuickShop.Util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.Map.Entry;
-
+import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.OfflinePlayer;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Database.Database;
-import org.maxgamer.QuickShop.Shop.ContainerShop;
-import org.maxgamer.QuickShop.Shop.Shop;
-import org.maxgamer.QuickShop.Shop.ShopChunk;
-import org.maxgamer.QuickShop.Shop.ShopManager;
-import org.maxgamer.QuickShop.Shop.ShopType;
+import com.google.common.io.Files;
 
 public class Converter {
     /**
@@ -35,10 +24,9 @@ public class Converter {
         final Database database = QuickShop.instance.getDB();
 
         try {
-            if (database.hasColumn("shops", "itemString")) {
-                // Convert.
+            if (database.hasColumn("shops", "owner")) {
                 try {
-                    //Converter.convertDatabase_3_8();
+                    Converter.convertDatabase_4_6();
                     return 1;
                 } catch (final Exception e) {
                     e.printStackTrace();
@@ -50,157 +38,145 @@ public class Converter {
             return -1;
         }
 
-        try {
-            final Connection con = database.getConnection();
-            final PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
-            final ResultSet rs = ps.executeQuery();
-
-            final String colType = rs.getMetaData().getColumnTypeName(3);
-
-            if (rs.next()) {
-                ps.close();
-
-                try {
-                    rs.getString("item");
-                    if (!colType.equalsIgnoreCase("BLOB")) {
-                        System.out.println("Item column type: " + colType + ", converting to BLOB.");
-
-                        // We're using the old format
-                        try {
-                            //Converter.convertDatabase_3_8();
-                            return 1;
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                            return -1;
-                        }
-                    }
-                } catch (final SQLException e) {
-                    // No item table column.
-                    // No upgrade necessary.
-                }
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-
-        try {
-            if (database.hasColumn("shops", "item")) {
-                //Converter.convertDatabase_3_8();
-                return 1;
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-
         return 0;
     }
-
-//    public static void convertDatabase_3_8() throws Exception {
-//        final Database database = QuickShop.instance.getDB();
-//        final ShopManager shopManager = QuickShop.instance.getShopManager();
-//
-//        Connection con = database.getConnection();
-//        System.out.println("Converting shops to 3.8 format...");
-//        // Step 1: Load existing shops.
-//        PreparedStatement ps = con.prepareStatement("SELECT * FROM shops");
-//        final ResultSet rs = ps.executeQuery();
-//        int shops = 0;
-//        System.out.println("Loading shops...");
-//        while (rs.next()) {
-//            final int x = rs.getInt("x");
-//            final int y = rs.getInt("y");
-//            final int z = rs.getInt("z");
-//            final String worldName = rs.getString("world");
-//            try {
-//                final World world = Bukkit.getWorld(worldName);
-//
-//                final ItemStack item = Util.getItemStack(rs.getBytes("item"));
-//
-//                final String owner = rs.getString("owner");
-//                final double price = rs.getDouble("price");
-//                final Location loc = new Location(world, x, y, z);
-//
-//                final int type = rs.getInt("type");
-//                final Shop shop = new ContainerShop(loc, price, item, owner);
-//                shop.setUnlimited(rs.getBoolean("unlimited"));
-//                shop.setShopType(ShopType.fromID(type));
-//
-//                shopManager.loadShop(rs.getString("world"), shop);
-//                shops++;
-//            } catch (final Exception e) {
-//                e.printStackTrace();
-//                System.out.println("Error loading a shop! Coords: " + worldName + " (" + x + ", " + y + ", " + z
-//                        + ") - Skipping it...");
-//            }
-//        }
-//        ps.close();
-//        rs.close();
-//
-//        System.out.println("Loading complete. Backing up and deleting shops table...");
-//        // Step 2: Delete shops table.
-//        final File existing = new File(QuickShop.instance.getDataFolder(), "shops.db");
-//        final File backup = new File(existing.getAbsolutePath() + ".3.7.bak");
-//
-//        final InputStream in = new FileInputStream(existing);
-//        final OutputStream out = new FileOutputStream(backup);
-//
-//        final byte[] buf = new byte[1024];
-//        int len;
-//        while ((len = in.read(buf)) > 0) {
-//            out.write(buf, 0, len);
-//        }
-//        in.close();
-//        out.close();
-//
-//        ps = con.prepareStatement("DELETE FROM shops");
-//        ps.execute();
-//        ps.close();
-//        con.close();
-//
-//        con = database.getConnection();
-//        ps = con.prepareStatement("DROP TABLE shops");
-//        ps.execute();
-//        ps.close();
-//
-//        // Step 3: Create shops table.
-//        final Statement st = database.getConnection().createStatement();
-//        final String createTable = "CREATE TABLE shops (" + "owner  TEXT(20) NOT NULL, "
-//                + "price  double(32, 2) NOT NULL, " + "itemConfig  BLOB NOT NULL, " + "x  INTEGER(32) NOT NULL, "
-//                + "y  INTEGER(32) NOT NULL, " + "z  INTEGER(32) NOT NULL, " + "world VARCHAR(32) NOT NULL, "
-//                + "unlimited  boolean, " + "type  boolean, " + "PRIMARY KEY (x, y, z, world) " + ");";
-//        st.execute(createTable);
-//
-//        // Step 4: Export the new data into the table
-//        for (final Entry<String, HashMap<ShopChunk, HashMap<Location, Shop>>> worlds: shopManager.getShops().entrySet()) {
-//            final String world = worlds.getKey();
-//            for (final Entry<ShopChunk, HashMap<Location, Shop>> chunks: worlds.getValue().entrySet()) {
-//                for (final Shop shop: chunks.getValue().values()) {
-//                    ps = con.prepareStatement("INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-//                    ps.setString(1, shop.getOwner());
-//                    ps.setDouble(2, shop.getPrice());
-//
-//                    ps.setString(3, Util.serialize(shop.getItem()));
-//
-//                    ps.setInt(4, shop.getLocation().getBlockX());
-//                    ps.setInt(5, shop.getLocation().getBlockY());
-//                    ps.setInt(6, shop.getLocation().getBlockZ());
-//                    ps.setString(7, world);
-//                    ps.setInt(8, (shop.isUnlimited() ? 1 : 0));
-//                    ps.setInt(9, ShopType.toID(shop.getShopType()));
-//
-//                    ps.execute();
-//                    ps.close();
-//
-//                    shops--;
-//                    if (shops % 10 == 0) {
-//                        System.out.println("Remaining: " + shops + " shops.");
-//                    }
-//                }
-//            }
-//        }
-//
-//        System.out.println("Conversion complete.");
-//    }
+    
+    public static void convertDatabase_4_6() throws Exception {
+        Database database = QuickShop.instance.getDB();
+        
+        System.out.println("Converting shops to 4.6 format...");
+        System.out.println("Preparing UUID cache");
+        
+        HashMap<String, UUID> nameMap = new HashMap<String, UUID>();
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+            nameMap.put(player.getName().toLowerCase(), player.getUniqueId());
+        
+        System.out.println("Making backup of the SQLite database");
+        File existing = new File(QuickShop.instance.getDataFolder(), "shops.db");
+        File backup = new File(existing.getAbsolutePath() + ".3.8.bak");
+        Files.copy(existing, backup);
+        
+        // Start actual database manipulation
+        Connection con = null;
+        Statement statement = null;
+        try {
+            con = database.getConnection();
+            statement = con.createStatement();
+            
+            // Step 1: Create new shop table
+            String createTable = "CREATE TABLE shops2 (ownerId TEXT(36) NOT NULL, "
+                    + "price  double(32, 2) NOT NULL, itemConfig  BLOB NOT NULL, x  INTEGER(32) NOT NULL, "
+                    + "y  INTEGER(32) NOT NULL, z  INTEGER(32) NOT NULL, world VARCHAR(32) NOT NULL, "
+                    + "unlimited  boolean, type  boolean, PRIMARY KEY (x, y, z, world) );";
+            statement.executeUpdate(createTable);
+            
+            // Step 2: Load and insert
+            System.out.println("Loading shops...");
+            ResultSet rs = statement.executeQuery("SELECT * FROM shops");
+            PreparedStatement insertShops = con.prepareStatement("INSERT INTO shops2 VALUES (?,?,?,?,?,?,?,?,?);");
+            try {
+                int failCount = 0;
+                while (rs.next()) {
+                    // Convert the name to UUID
+                    String owner = rs.getString("owner");
+                    UUID id = nameMap.get(owner.toLowerCase());
+                    if (id == null)
+                    {
+                        System.out.println(String.format("Wont convert shop %d,%d,%d,%s. Cant resolve player %s", rs.getInt("x"), rs.getInt("y"), rs.getInt("z"), rs.getString("world"), owner));
+                        ++failCount;
+                        continue;
+                    }
+                    
+                    // Insert the new shop
+                    insertShops.setString(1, id.toString());
+                    insertShops.setDouble(2, rs.getDouble("price"));
+                    insertShops.setString(3, rs.getString("itemConfig"));
+                    insertShops.setInt(4, rs.getInt("x"));
+                    insertShops.setInt(5, rs.getInt("y"));
+                    insertShops.setInt(6, rs.getInt("z"));
+                    insertShops.setString(7, rs.getString("world"));
+                    insertShops.setInt(8, rs.getInt("unlimited"));
+                    insertShops.setInt(9, rs.getInt("type"));
+                    insertShops.addBatch();
+                }
+                
+                System.out.println("Saving shops");
+                insertShops.executeBatch();
+                
+                if (failCount != 0) {
+                    System.out.println("Failed to convert " + failCount + " shops to use UUIDs. They have been skipped");
+                }
+            } finally {
+                rs.close();
+                insertShops.close();
+            }
+            
+            System.out.println("Converting messages");
+            // Step 3: Create new messages table
+            statement.executeUpdate("CREATE TABLE messages2 (owner TEXT(36) NOT NULL, message TEXT(200) NOT NULL, time INTEGER(32) NOT NULL);");
+            
+            // Step 4: Load and insert messages
+            PreparedStatement insertMessages = con.prepareStatement("INSERT INTO messages2 VALUES (?, ?, ?)");
+            rs = statement.executeQuery("SELECT * FROM messages");
+            try {
+                int failCount = 0;
+                while (rs.next()) {
+                    // Convert the owner to UUID
+                    String owner = rs.getString("owner");
+                    UUID id = nameMap.get(owner.toLowerCase());
+                    if (id == null) {
+                        ++failCount;
+                        continue;
+                    }
+                    
+                    // Insert the new message
+                    insertMessages.setString(1, id.toString());
+                    insertMessages.setString(2, rs.getString("message"));
+                    insertMessages.setLong(3, rs.getLong("time"));
+                    insertMessages.addBatch();
+                }
+                
+                System.out.println("Saving messages");
+                insertMessages.executeBatch();
+                
+                if (failCount != 0) {
+                    System.out.println("Failed to convert " + failCount + " messages to use UUIDs. They have been skipped");
+                }
+            } finally {
+                insertMessages.close();
+                rs.close();
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            
+            if (con != null) {
+                con.close();
+            }
+        }
+        
+        // Create a new connection (clean lock state)
+        try {
+            con = database.getConnection();
+            statement = con.createStatement();
+            
+            // Step 5: drop old tables
+            statement.executeUpdate("DROP TABLE shops");
+            statement.executeUpdate("DROP TABLE messages");
+            
+            // Step 6: rename tables
+            statement.executeUpdate("ALTER TABLE shops2 RENAME TO shops");
+            statement.executeUpdate("ALTER TABLE messages2 RENAME TO messages");
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            
+            if (con != null) {
+                con.close();
+            }
+        }
+        System.out.println("Conversion complete.");
+    }
 }

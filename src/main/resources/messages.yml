@@ -78,6 +78,7 @@ command:
    #success-created-unlimited: "&aUnlimited QuickShop created."
    toggle-unlimited: "&aShop is now {0}"
    no-owner-given: "&cNo owner given. Use &a/qs setowner <player>&c"
+   unknown-owner-given: "&cPlayer does not exist or has not joined this server"
    new-owner: "&aNew owner: &e{0}"
    now-buying: "&aNow &dBUYING&a &e{0}"
    now-selling: "&aNow &bSELLING &e{0}"
