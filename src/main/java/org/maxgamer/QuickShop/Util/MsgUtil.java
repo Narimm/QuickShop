@@ -172,6 +172,12 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "| "
                     + MsgUtil.getMessage("menu.damage-percent-remaining", Util.getToolPercentage(items)));
         }
+        
+        Map<String, Object> data = Util.getData(items);
+        for (Entry<String, Object> entry : data.entrySet()) {
+            p.sendMessage(ChatColor.DARK_PURPLE + "| "
+                    + MsgUtil.getMessage("menu.item-data", entry.getKey(), String.valueOf(entry.getValue())));
+        }
 
         if (shop.isSelling()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.stock", "" + stock));

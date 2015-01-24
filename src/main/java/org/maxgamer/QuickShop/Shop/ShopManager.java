@@ -16,7 +16,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
 import org.maxgamer.QuickShop.QuickShop;
@@ -31,9 +30,6 @@ public class ShopManager {
 
     private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops          = new HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>>(
                                                                                                       3);
-
-    private static final Material                                              CURRENCY_MAJOR = Material.EMERALD;
-    private static final Material                                              CURRENCY_MINOR = Material.GOLD_NUGGET;
 
     public ShopManager(QuickShop plugin) {
         this.plugin = plugin;
@@ -56,8 +52,8 @@ public class ShopManager {
         final ItemStack item = shop.getItem();
         try {
             // Write it to the database
-            final String q = "INSERT INTO shops (owner, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            plugin.getDB().execute(q, shop.getOwner(), shop.getPrice(), Util.serialize(item), loc.getBlockX(),
+            final String q = "INSERT INTO shops (ownerId, price, itemConfig, x, y, z, world, unlimited, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            plugin.getDB().execute(q, shop.getOwner().getUniqueId().toString(), shop.getPrice(), Util.serialize(item), loc.getBlockX(),
                     loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName(), (shop.isUnlimited() ? 1 : 0),
                     shop.getShopType().toID());
 

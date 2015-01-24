@@ -59,6 +59,7 @@ menu:
     price-per: "&aPrice per &e{0} &a- &e{1}"
     total-value-of-chest: "&aTotal value of Chest: &e{0}"
     damage-percent-remaining: "&e{0}% &aRemaining."
+    item-data: "&e{0}: &a{1}."
     this-shop-is-buying: "&aThis shop is &dBUYING&a items."
     this-shop-is-selling: "&aThis shop is &bSELLING&a items."
     
