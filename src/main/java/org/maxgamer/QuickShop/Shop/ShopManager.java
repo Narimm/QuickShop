@@ -526,22 +526,10 @@ public class ShopManager {
                             }
 
                             if (!shop.isUnlimited() || plugin.getConfig().getBoolean("shop.pay-unlimited-shop-owners")) {
-                                if (shop instanceof ContainerShop) {
-                                    final ContainerShop cs = (ContainerShop) shop;
+                                plugin.getEcon().deposit(shop.getOwner(), total * (1 - tax));
 
-                                    // Calculates the "minor" value to use,
-                                    // given that 100x minor = 1 major currency.
-                                    if (!depositInInventory(cs.getInventory(), (int) Math.floor(total * 100))) {
-                                        p.sendMessage(MsgUtil.getMessage("container-too-small"));
-                                        plugin.getEcon().deposit(p, total);
-                                        return;
-                                    }
-                                } else {
-                                    plugin.getEcon().deposit(shop.getOwner(), total * (1 - tax));
-
-                                    if (tax != 0) {
-                                        plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
-                                    }
+                                if (tax != 0) {
+                                    plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
                                 }
                             }
 
@@ -660,78 +648,6 @@ public class ShopManager {
                 else {
                     return; // It was cancelled, go away.
                 }
-            }
-
-            /**
-             * GermanFunServer-specific: Deposits the currency amounts inside
-             * the chests and
-             * does not give them to the player directly.
-             * 
-             * @param inventory
-             *            (Chest)-Inventory
-             * @param total
-             *            Total amount
-             */
-            private boolean depositInInventory(Inventory inventory, int total) {
-                final int minorValue = total % 100;
-                final int majorValue = total / 100;
-
-                // Calculate existing space.
-                int minorFree = 0;
-                int majorFree = 0;
-                int free = 0;
-
-                for (final ItemStack stack: inventory.getContents()) {
-                    if (stack == null || stack.getAmount() == 0) {
-                        free++;
-                    } else if (stack.getType() == ShopManager.CURRENCY_MINOR) {
-                        minorFree += stack.getMaxStackSize() - stack.getAmount();
-                    } else if (stack.getType() == ShopManager.CURRENCY_MAJOR) {
-                        majorFree += stack.getMaxStackSize() - stack.getAmount();
-                    }
-                }
-
-                // Enough free space?
-                if (minorFree < minorValue) {
-                    free -= Math.ceil((minorValue - minorFree) / 64f);
-                }
-                if (majorFree < majorValue) {
-                    free -= Math.ceil((majorValue - majorFree) / 64f);
-                }
-
-                if (free < 0) {
-                    return false;
-                }
-
-                // GermanFunServer
-                final ItemStack minor = new ItemStack(ShopManager.CURRENCY_MINOR, minorValue);
-                final ItemStack major = new ItemStack(ShopManager.CURRENCY_MAJOR, majorValue);
-
-                if (minor.getAmount() > 0 && !inventory.addItem(minor).isEmpty()) {
-                    throw new IllegalStateException("failed to add items to chest");
-                }
-
-                if (major.getAmount() > 0 && !inventory.addItem(major).isEmpty()) {
-                    throw new IllegalStateException("failed to add items to chest");
-                }
-
-                // Check if we can convert 100 of minor currency to 1 major
-                // currency
-                int minorCount = 0;
-                for (final ItemStack stack: inventory.getContents()) {
-                    if (stack != null && stack.getType() == ShopManager.CURRENCY_MINOR) {
-                        minorCount += stack.getAmount();
-                    }
-                }
-
-                // Convert minor to major currency to save some space.
-                while (minorCount >= 100) {
-                    if (inventory.addItem(new ItemStack(ShopManager.CURRENCY_MAJOR, 1)).isEmpty()) {
-                        inventory.removeItem(new ItemStack(ShopManager.CURRENCY_MINOR, 100));
-                    }
-                    minorCount -= 100;
-                }
-                return true;
             }
         });
     }
