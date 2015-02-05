@@ -23,7 +23,7 @@ public class DatabaseHelper {
         try {
             // V3.4.2
             ps = db.getConnection().prepareStatement(
-                    "ALTER TABLE shops MODIFY COLUMN price double(32,2) NOT NULL AFTER owner");
+                    "ALTER TABLE shops MODIFY COLUMN price double(32,2) NOT NULL AFTER ownerId");
             ps.execute();
             ps.close();
         } catch (final SQLException e) {}
@@ -44,7 +44,7 @@ public class DatabaseHelper {
      */
     public static void createShopsTable(Database db) throws SQLException {
         final Statement st = db.getConnection().createStatement();
-        final String createTable = "CREATE TABLE shops (" + "owner  TEXT(20) NOT NULL, "
+        final String createTable = "CREATE TABLE shops (" + "ownerId  TEXT(36) NOT NULL, "
                 + "price  double(32, 2) NOT NULL, " + "itemConfig TEXT CHARSET utf8 NOT NULL, "
                 + "x  INTEGER(32) NOT NULL, " + "y  INTEGER(32) NOT NULL, " + "z  INTEGER(32) NOT NULL, "
                 + "world VARCHAR(32) NOT NULL, " + "unlimited  boolean, " + "type  boolean, "

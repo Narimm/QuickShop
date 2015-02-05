@@ -217,9 +217,9 @@ public class ContainerShop implements Shop {
         final String world = getLocation().getWorld().getName();
         final int unlimited = isUnlimited() ? 1 : 0;
 
-        final String q = "UPDATE shops SET owner = ?, itemConfig = ?, unlimited = ?, type = ?, price = ? WHERE x = ? AND y = ? and z = ? and world = ?";
+        final String q = "UPDATE shops SET ownerId = ?, itemConfig = ?, unlimited = ?, type = ?, price = ? WHERE x = ? AND y = ? and z = ? and world = ?";
         try {
-            plugin.getDB().execute(q, getOwner(), Util.serialize(getItem()), unlimited, shopType.toID(), getPrice(), x,
+            plugin.getDB().execute(q, getOwner().getUniqueId(), Util.serialize(getItem()), unlimited, shopType.toID(), getPrice(), x,
                     y, z, world);
         } catch (final Exception e) {
             e.printStackTrace();
