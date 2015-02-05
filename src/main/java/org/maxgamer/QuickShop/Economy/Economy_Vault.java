@@ -32,6 +32,10 @@ public class Economy_Vault implements EconomyCore {
 
     @Override
     public boolean deposit(OfflinePlayer player, double amount) {
+        if (player == null) {
+            return false;
+        }
+        
         return vault.depositPlayer(player, amount).transactionSuccess();
     }
 
