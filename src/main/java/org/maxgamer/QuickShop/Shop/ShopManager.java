@@ -333,7 +333,7 @@ public class ShopManager {
 
                         // Tax refers to the cost to create a shop. Not actual
                         // tax, that would be silly
-                        if (tax != 0 && plugin.getEcon().getBalance(p) < tax) {
+                        if (tax > 0 && plugin.getEcon().getBalance(p) < tax) {
                             p.sendMessage(MsgUtil.getMessage("you-cant-afford-a-new-shop", format(tax)));
                             return;
                         }
@@ -352,14 +352,16 @@ public class ShopManager {
                         // This must be called after the event has been called.
                         // Else, if the event is cancelled, they won't get their
                         // money back.
-                        if (tax != 0) {
+                        if (tax > 0) {
                             if (!plugin.getEcon().withdraw(p, tax)) {
                                 p.sendMessage(MsgUtil.getMessage("you-cant-afford-a-new-shop", format(tax)));
                                 shop.onUnload();
                                 return;
                             }
 
-                            plugin.getEcon().deposit(plugin.getTaxAccount(), tax);
+                            if (plugin.getTaxAccount().hasPlayedBefore()) {
+                                plugin.getEcon().deposit(plugin.getTaxAccount(), tax);
+                            }
                         }
 
                         /* The shop has hereforth been successfully created */
@@ -524,7 +526,7 @@ public class ShopManager {
                             if (!shop.isUnlimited() || plugin.getConfig().getBoolean("shop.pay-unlimited-shop-owners")) {
                                 plugin.getEcon().deposit(shop.getOwner(), total * (1 - tax));
 
-                                if (tax != 0) {
+                                if (tax != 0 && plugin.getTaxAccount().hasPlayedBefore()) {
                                     plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
                                 }
                             }
@@ -613,7 +615,7 @@ public class ShopManager {
                                     return;
                                 }
 
-                                if (tax != 0) {
+                                if (tax != 0 && plugin.getTaxAccount().hasPlayedBefore()) {
                                     plugin.getEcon().deposit(plugin.getTaxAccount(), total * tax);
                                 }
                             }

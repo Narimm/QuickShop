@@ -388,7 +388,9 @@ public class QS implements CommandExecutor {
 
                         sender.sendMessage(MsgUtil.getMessage("fee-charged-for-price-change",
                                 plugin.getEcon().format(fee)));
-                        plugin.getEcon().deposit(plugin.getTaxAccount(), fee);
+                        if (plugin.getTaxAccount().hasPlayedBefore()) {
+                            plugin.getEcon().deposit(plugin.getTaxAccount(), fee);
+                        }
                     }
 
                     // Update the shop
