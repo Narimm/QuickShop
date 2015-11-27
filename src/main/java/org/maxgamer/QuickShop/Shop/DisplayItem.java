@@ -49,6 +49,11 @@ public class DisplayItem {
         }
 
         final Location dispLoc = getDisplayLocation();
+        
+        ItemMeta meta = iStack.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "QuickShop ");
+        meta.setLore(Arrays.asList(UUID.randomUUID().toString()));
+        iStack.setItemMeta(meta);
 
         item = shop.getLocation().getWorld().dropItem(dispLoc, iStack);
         item.setVelocity(new Vector(0, 0.1, 0));
@@ -57,10 +62,6 @@ public class DisplayItem {
             System.out.println("Spawned item. Safeguarding.");
         }
         
-        ItemMeta meta = iStack.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "QuickShop ");
-        meta.setLore(Arrays.asList(UUID.randomUUID().toString()));
-        iStack.setItemMeta(meta);
         item.setPickupDelay(Integer.MAX_VALUE);
     }
 

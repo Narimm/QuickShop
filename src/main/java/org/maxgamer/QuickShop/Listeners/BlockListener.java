@@ -1,5 +1,6 @@
 package org.maxgamer.QuickShop.Listeners;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
@@ -136,5 +140,21 @@ public class BlockListener implements Listener {
             return null;
         }
         return plugin.getShopManager().getShop(b.getLocation());
+    }
+    
+    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+    private void onHopperPickup(InventoryPickupItemEvent event) {
+        if (isQuickshopItem(event.getItem().getItemStack())) {
+            event.setCancelled(true);
+        }
+    }
+    
+    private boolean isQuickshopItem(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
