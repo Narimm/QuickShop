@@ -215,8 +215,12 @@ public class PlayerListener implements Listener {
     @EventHandler(priority=EventPriority.LOW, ignoreCancelled=false)
     public void onPlayerClick(InventoryClickEvent event)  {
         ItemStack item = event.getCurrentItem();
+        if (item == null) {
+            return;
+        }
+        
         ItemMeta meta = item.getItemMeta();
-        if (meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
+        if (meta != null && meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
             event.setCurrentItem(null);
             event.setCancelled(true);
         }
