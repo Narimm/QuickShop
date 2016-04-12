@@ -1,11 +1,14 @@
 package org.maxgamer.QuickShop.Util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -432,7 +435,14 @@ public class Util {
             int i = 0;
             for (final String s: splt) {
                 i += 1;
-                fin += Character.toUpperCase(s.charAt(0)) + s.substring(1);
+                if (s.isEmpty())
+                    continue;
+
+                if (s.length() == 1)
+                    fin += Character.toUpperCase(s.charAt(0));
+                else
+                    fin += Character.toUpperCase(s.charAt(0)) + s.substring(1);
+
                 if (i < splt.length) {
                     fin += " ";
                 }
@@ -530,7 +540,27 @@ public class Util {
             prefix += "SPLASH_";
         }
 
-        if (pot.getEffects().isEmpty()) {
+        Collection<PotionEffect> potionEffects;
+        boolean noEffects = false;
+
+        try {
+			// This code comes from pot.getEffects()
+			if (pot.getType() == null) {
+				potionEffects = ImmutableList.of();
+			} else {
+				potionEffects = pot.getBrewer().getEffectsFromDamage(pot.toDamageValue());
+			}
+
+			noEffects = potionEffects.isEmpty();
+
+        } catch (Exception ex) {
+            Util.plugin.getLogger().info("Ignoring exception for pot.getBrewer().getEffectsFromDamage(): " + ex.getMessage());
+            Util.plugin.getLogger().info(ex.getStackTrace().toString());
+            noEffects = true;
+            potionEffects = new ArrayList<>();
+        }
+
+        if (noEffects) {
             switch (pot.getNameId()) {
                 case 0:
                     return prefix + "MUNDANE_POTION" + suffix;
@@ -549,7 +579,7 @@ public class Util {
             }
         } else {
             String effects = "";
-            for (final PotionEffect effect: pot.getEffects()) {
+            for (final PotionEffect effect: potionEffects) {
                 effects += effect.toString().split(":")[0];
             }
             return prefix + effects + suffix;
