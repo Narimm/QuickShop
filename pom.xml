@@ -12,11 +12,13 @@
 			<name>local repo</name>
 			<url>${project.baseUri}libs</url>
 		</repository>
-		
-		<!-- For bukkit -->
+
+		<!-- For spigot -->
 		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+			<id>md5-repo</id>
+			<url>http://repo.md-5.net/content/groups/public/</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
 		</repository>
 		
 		<!-- For Vault -->
@@ -52,15 +54,13 @@
 	</repositories>
 
 	<dependencies>
-		<!-- Bukkit -->
+		<!-- Spigot -->
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<optional>true</optional>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.9-R0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<!-- Spout -->
 		<dependency>
 			<groupId>org.spoutcraft</groupId>
