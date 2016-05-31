@@ -34,6 +34,7 @@ public class BlockListener implements Listener {
 
     /**
      * Listens for chest placement, so a doublechest shop can't be created.
+     * @param e the event
      */
     @EventHandler(ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
@@ -58,6 +59,7 @@ public class BlockListener implements Listener {
 
     /**
      * Removes chests when they're destroyed.
+     * @param e the event
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent e) {
@@ -111,6 +113,7 @@ public class BlockListener implements Listener {
 
     /**
      * Handles shops breaking through explosions
+     * @param e the event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(EntityExplodeEvent e) {
@@ -151,10 +154,6 @@ public class BlockListener implements Listener {
     
     private boolean isQuickshopItem(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
-            return true;
-        } else {
-            return false;
-        }
+        return meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ");
     }
 }

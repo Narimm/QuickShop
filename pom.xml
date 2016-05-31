@@ -3,9 +3,42 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.addstar</groupId>
 	<artifactId>quickshop</artifactId>
-	<version>4.6</version>
+	<version>4.7-SNAPSHOT</version>
 	<name>QuickShop</name>
-
+	<properties>
+		<build.number/>
+		<plugin.version>${project.version}-${build.number}</plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<scm>
+		<connection>scm:git:git@github.com:AddstarMC/Quickshop.git</connection>
+		<developerConnection>scm:git:git@github.com:AddstarMC/Quickshop.git</developerConnection>
+		<url>https://github.com/AddstarMC/Quickshop</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>maven.addstar.com.au</id>
+			<name>maven.addstar.com.au-releases</name>
+			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven.addstar.com.au</id>
+			<name>maven.addstar.com.au-snapshots</name>
+			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<developers>
+		<developer>
+			<id>AddstarMC</id>
+			<name>AddstarMC</name>
+			<url>http://github.com/AddstarMC</url>
+			<roles>
+				<role>developer</role>
+				<role>maintainer</role>
+			</roles>
+			<timezone>10</timezone>
+		</developer>
+	</developers>
 	<repositories>
 		<repository>
 			<id>libs</id>
@@ -35,14 +68,14 @@
 
 		<!-- Addstar repos -->
 		<repository>
-			<id>addstar-repo</id>
+			<id>addstar-ext-release</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 		<repository>
-			<id>addstar-snapshot-repo</id>
+			<id>addstar-ext-snapshot</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -58,22 +91,15 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.9-R0.1-SNAPSHOT</version>
-		</dependency>
-
-		<!-- Spout -->
-		<dependency>
-			<groupId>org.spoutcraft</groupId>
-			<artifactId>spoutcraftplugin</artifactId>
-			<version>1.6.4-R2.1-SNAPSHOT</version>
-			<optional>true</optional>
+			<version>1.9.4-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<!-- Vault -->
 		<dependency>
 	      <groupId>net.milkbowl.vault</groupId>
 	      <artifactId>Vault</artifactId>
-	      <version>1.4.1</version>
+	      <version>1.5.6</version>
 	      <exclusions>
 	        <exclusion>
 	          <groupId>org.bukkit</groupId>
@@ -85,19 +111,21 @@
 	        </exclusion>
 	      </exclusions>
 	      <optional>true</optional>
+			<scope>provided</scope>
 	    </dependency>
 	    
 	    <!-- Monolith -->
 	    <dependency>
 			<groupId>au.com.addstar</groupId>
 			<artifactId>Monolith</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
+			<version>1.4.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.spigotmc</groupId>
 					<artifactId>spigot</artifactId>
 				</exclusion>
 			</exclusions>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -115,9 +143,44 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
 			</plugin>
 		</plugins>
 	</build>

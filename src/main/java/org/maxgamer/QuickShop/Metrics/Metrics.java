@@ -69,11 +69,8 @@ import org.bukkit.scheduler.BukkitTask;
  * <p>
  * Public methods provided by this class:
  * </p>
- * <code>
- * Graph createGraph(String name); <br/>
- * void addCustomData(Metrics.Plotter plotter); <br/>
- * void start(); <br/>
- * </code>
+ * {@code Graph createGraph(String name); void addCustomData(Metrics.Plotter plotter); void start()}
+ *
  */
 public class Metrics {
 
@@ -332,7 +329,7 @@ public class Metrics {
      * Enables metrics for the server by setting "opt-out" to false in the
      * config file and starting the metrics task.
      * 
-     * @throws IOException
+     * @throws IOException if we cant enable
      */
     public void enable() throws IOException {
         // This has to be synchronized or it can collide with the check in the
@@ -356,7 +353,7 @@ public class Metrics {
      * Disables metrics for the server by setting "opt-out" to true in the
      * config file and canceling the metrics task.
      * 
-     * @throws IOException
+     * @throws IOException if it ccanot be disabled
      */
     public void disable() throws IOException {
         // This has to be synchronized or it can collide with the check in the

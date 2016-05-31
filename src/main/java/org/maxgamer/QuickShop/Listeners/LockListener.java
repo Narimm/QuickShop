@@ -16,6 +16,9 @@ import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LockListener implements Listener {
     private final QuickShop plugin;
 
@@ -61,6 +64,7 @@ public class LockListener implements Listener {
 
     /**
      * Handles hopper placement
+     * @param e the event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onPlace(BlockPlaceEvent e) {
@@ -105,6 +109,7 @@ public class LockListener implements Listener {
 
     /**
      * Removes chests when they're destroyed.
+     * @param e the event
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBreak(BlockBreakEvent e) {
@@ -146,21 +151,23 @@ public class LockListener implements Listener {
 
     /**
      * Handles shops breaking through explosions
+     * @param e the event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onExplode(EntityExplodeEvent e) {
         if (e.isCancelled()) {
             return;
         }
-
-        for (int i = 0; i < e.blockList().size(); i++) {
-            final Block b = e.blockList().get(i);
+        List<Integer> index = new ArrayList<>();
+        for (Block b:e.blockList()) {
             final Shop shop = plugin.getShopManager().getShop(b.getLocation());
             if (shop != null) {
-                // ToDo: Shouldn't I be decrementing 1 here? Concurrency and
-                // all..
-                e.blockList().remove(b);
+                index.add(e.blockList().indexOf(b));
             }
+        }
+        //to avoid modifying the list while we are parsing it
+        for (int i:index){
+            e.blockList().remove(i);
         }
     }
 }

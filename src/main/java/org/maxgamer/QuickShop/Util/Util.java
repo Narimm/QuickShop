@@ -1,14 +1,12 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,14 +17,17 @@ import org.bukkit.block.BlockState;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
-import org.bukkit.potion.Potion;
+
 import org.bukkit.potion.PotionEffect;
 import org.maxgamer.QuickShop.QuickShop;
 
@@ -34,7 +35,6 @@ import com.google.common.collect.Maps;
 
 import au.com.addstar.monolith.StringTranslator;
 
-@SuppressWarnings("deprecation")
 public class Util {
     private static HashSet<Material> tools       = new HashSet<Material>();
     private static HashSet<Material> blacklist   = new HashSet<Material>();
@@ -50,11 +50,6 @@ public class Util {
 
         for (final String s: Util.plugin.getConfig().getStringList("shop-blocks")) {
             Material mat = Material.getMaterial(s.toUpperCase());
-            if (mat == null) {
-                try {
-                    mat = Material.getMaterial(Integer.parseInt(s));
-                } catch (final NumberFormatException e) {}
-            }
             if (mat == null) {
                 Util.plugin.getLogger().info("Invalid shop-block: " + s);
             } else {
@@ -384,9 +379,12 @@ public class Util {
      */
     public static String getName(ItemStack i) {
         if (i.getType() == Material.POTION) {
-            String name = getPotionName(i.getDurability());
+            ItemMeta meta = i.getItemMeta();
+            String name = null;
+            if(meta instanceof PotionMeta){
+            name = getPotionName(i);}
             if (name != null) {
-                return prettifyText(name);
+                return name;
             }
         } else if (i.getType().isRecord()) {
             return getRecordName(i.getType());
@@ -461,13 +459,13 @@ public class Util {
     private static final int[]    DECIMAL = {10, 9, 5, 4, 1};
 
     /**
-     * Converts the given number to roman numerals. If the number is >= 40 or <=
-     * 0, it will just return the number as a string.
+     * Converts the given number to roman numerals. If the number is less than or equal to 40
+     * or greater than or equal 0, it will just return the number as a string.
      * 
      * @param n
      *            The number to convert
      * @return The roman numeral representation of this number, or the number in
-     *         decimal form as a string if n <= 0 || n >= 40.
+     *         decimal form as a string if {@code n <= 0 || n >= 40}.
      */
     public static String toRoman(int n) {
         if (n <= 0 || n >= 40) {
@@ -516,73 +514,54 @@ public class Util {
         }
     }
 
-    private static String getPotionName(short damage) {
-        if (damage == 0) {
-            return "WATER_BOTTLE";
+    private static String getPotionName(ItemStack item) {
+        PotionMeta meta = null;
+        String prefix = "MAIN-";
+        if (item.getType() == Material.POTION) {
+            if (item.getItemMeta() instanceof PotionMeta) {
+                meta = (PotionMeta) item.getItemMeta();
+                prefix += "Potion";
+            } else {
+                return "Water Bottle";
+            }
         }
-
-        Potion pot;
-        try {
-            pot = Potion.fromDamage(damage);
-        } catch (final Exception e) {
-            return "CUSTOM_POTION";
+        if (item.getType() == Material.SPLASH_POTION) {
+            if (item.getItemMeta() instanceof PotionMeta) {
+                meta = (PotionMeta) item.getItemMeta();
+                prefix += "Splash Potion";
+            } else {
+                return "Splasn Water Bottle";
+            }
         }
-
-        String prefix = "";
-        String suffix = "";
-        if (pot.getLevel() > 0) {
-            suffix += "_" + pot.getLevel();
+        if (item.getType() == Material.LINGERING_POTION) {
+            if (item.getItemMeta() instanceof PotionMeta) {
+                meta = (PotionMeta) item.getItemMeta();
+                prefix += "Lingering Potion";
+            } else {
+                return "Lingering Water Bottle";
+            }
         }
-        if (pot.hasExtendedDuration()) {
-            prefix += "EXTENDED_";
+        if(meta == null){
+            return prefix+"NO Potion Data ";
         }
-        if (pot.isSplash()) {
-            prefix += "SPLASH_";
+        if(meta.getBasePotionData().isExtended()){
+            prefix += "Extended Duration ";
         }
-
-        Collection<PotionEffect> potionEffects;
+        if(meta.getBasePotionData().isUpgraded()){
+            prefix += "Amplified Effect ";
+        }
+        prefix +=  meta.getDisplayName();
         boolean noEffects = false;
-
-        try {
-			// This code comes from pot.getEffects()
-			if (pot.getType() == null) {
-				potionEffects = ImmutableList.of();
-			} else {
-				potionEffects = pot.getBrewer().getEffectsFromDamage(pot.toDamageValue());
-			}
-
-			noEffects = potionEffects.isEmpty();
-
-        } catch (Exception ex) {
-            Util.plugin.getLogger().info("Ignoring exception for pot.getBrewer().getEffectsFromDamage(): " + ex.getMessage());
-            Util.plugin.getLogger().info(ex.getStackTrace().toString());
-            noEffects = true;
-            potionEffects = new ArrayList<>();
-        }
-
-        if (noEffects) {
-            switch (pot.getNameId()) {
-                case 0:
-                    return prefix + "MUNDANE_POTION" + suffix;
-                case 7:
-                    return prefix + "CLEAR_POTION" + suffix;
-                case 11:
-                    return prefix + "DIFFUSE_POTION" + suffix;
-                case 13:
-                    return prefix + "ARTLESS_POTION" + suffix;
-                case 15:
-                    return prefix + "THIN_POTION" + suffix;
-                case 16:
-                    return prefix + "AWKWARD_POTION" + suffix;
-                case 32:
-                    return prefix + "THICK_POTION" + suffix;
-            }
-        } else {
-            String effects = "";
+        List<PotionEffect> potionEffects = meta.getCustomEffects();
+        noEffects = potionEffects.isEmpty();
+        if (!noEffects)  {
+            PotionEffect maineffect = potionEffects.get(0);
+            prefix += maineffect.getType().getName() + ",Duration="+maineffect.getDuration()+ "Amplifier=" + maineffect.getAmplifier();
+            String effects = "Full Effect List -- ";
             for (final PotionEffect effect: potionEffects) {
-                effects += effect.toString().split(":")[0];
+                effects += " Effect:"+effect.getType().getName()+" Amp:" +effect.getAmplifier() + " Dur:"+effect.getDuration();
             }
-            return prefix + effects + suffix;
+            return prefix + effects;
         }
         return null;
     }
@@ -652,7 +631,7 @@ public class Util {
     /**
      * Formats the given number according to how vault would like it.
      * E.g. $50 or 5 dollars.
-     * 
+     * @param n a double representing the number to be formatted
      * @return The formatted string.
      */
     public static String format(double n) {
@@ -664,8 +643,7 @@ public class Util {
     }
 
     /**
-     * @param m
-     *            The material to check if it is blacklisted
+     * @param m The material to check if it is blacklisted
      * @return true if the material is black listed. False if not.
      */
     public static boolean isBlacklisted(Material m) {
@@ -675,8 +653,7 @@ public class Util {
     /**
      * Fetches the block which the given sign is attached to
      * 
-     * @param sign
-     *            The sign which is attached
+     * @param b The Block the sign is attached
      * @return The block the sign is attached to
      */
     public static Block getAttached(Block b) {
@@ -757,12 +734,8 @@ public class Util {
         final int x = (int) Math.floor((loc.getBlockX()) / 16.0);
         final int z = (int) Math.floor((loc.getBlockZ()) / 16.0);
 
-        if (loc.getWorld().isChunkLoaded(x, z)) {
-            // System.out.println("Chunk is loaded " + x + ", " + z);
-            return true;
-        } else {
-            // System.out.println("Chunk is NOT loaded " + x + ", " + z);
-            return false;
-        }
+        // System.out.println("Chunk is loaded " + x + ", " + z);
+// System.out.println("Chunk is NOT loaded " + x + ", " + z);
+        return loc.getWorld().isChunkLoaded(x, z);
     }
 }

@@ -203,10 +203,6 @@ public class MsgUtil {
                         + entries.getValue());
             }
         }
-
-        try {
-            Class.forName("org.bukkit.inventory.meta.EnchantmentStorageMeta");
-
             if (items.getItemMeta() instanceof EnchantmentStorageMeta) {
                 final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) items.getItemMeta();
                 stor.getStoredEnchants();
@@ -221,11 +217,6 @@ public class MsgUtil {
                     }
                 }
             }
-        } catch (final ClassNotFoundException e) {
-            // They don't have an up to date enough build of CB to do this.
-            // TODO: Remove this when it becomes redundant
-        }
-
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
     }
 
@@ -313,10 +304,6 @@ public class MsgUtil {
                         + entries.getValue());
             }
         }
-
-        try {
-            Class.forName("org.bukkit.inventory.meta.EnchantmentStorageMeta");
-
             if (shop.getItem().getItemMeta() instanceof EnchantmentStorageMeta) {
                 final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) shop.getItem().getItemMeta();
                 stor.getStoredEnchants();
@@ -331,10 +318,6 @@ public class MsgUtil {
                     }
                 }
             }
-        } catch (final ClassNotFoundException e) {
-            // They don't have an up to date enough build of CB to do this.
-            // TODO: Remove this when it becomes redundant
-        }
 
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
     }

@@ -76,6 +76,7 @@ public class DisplayItem {
     /**
      * Removes all items floating ontop of the chest
      * that aren't the display item.
+     * @return true if we remove a dupe
      */
     public boolean removeDupe() {
         if (shop.getLocation().getWorld() == null) {
@@ -122,7 +123,7 @@ public class DisplayItem {
     }
 
     /**
-     * @return Returns the exact location of the display item. (1 above shop
+     * @return Location the exact location of the display item. (1 above shop
      *         block, in the center)
      */
     public Location getDisplayLocation() {
@@ -130,7 +131,7 @@ public class DisplayItem {
     }
 
     /**
-     * Returns the reference to this shops item. Do not modify.
+     * @return Item the reference to this shops item. Do not modify.
      */
     public Item getItem() {
         return item;

@@ -67,7 +67,7 @@ public class QuickShop extends JavaPlugin {
      * A set of players who have been warned
      * ("Your shop isn't automatically locked")
      */
-    public HashSet<String>                 warnings               = new HashSet<String>(10);
+    public HashSet<String>                 warnings               = new HashSet<>(10);
 
     /** The database for storing all our data for persistence */
     private Database                       database;
@@ -102,7 +102,7 @@ public class QuickShop extends JavaPlugin {
     public boolean                         limit                  = false;
     private UUID                           taxAccountId           = null;
 
-    private final HashMap<String, Integer> limits                 = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> limits                 = new HashMap<>();
 
     public int getShopLimit(Player p) {
         int max = getConfig().getInt("limits.default");
@@ -123,7 +123,10 @@ public class QuickShop extends JavaPlugin {
     /** Whether debug info should be shown in the console */
     public boolean  debug    = false;
 
-    /** The plugin metrics from Hidendra */
+    /**
+     *
+     * @return the Hidendra metrics
+     */
     public Metrics getMetrics() {
         return metrics;
     }
@@ -138,7 +141,7 @@ public class QuickShop extends JavaPlugin {
                         // others.
         getConfig().options().copyDefaults(true); // Load defaults.
 
-        if (loadEcon() == false) {
+        if (!loadEcon()) {
             return;
         }
 
@@ -343,7 +346,7 @@ public class QuickShop extends JavaPlugin {
         try {
             metrics = new Metrics(this);
 
-            if (metrics.isOptOut() == false) {
+            if (!metrics.isOptOut()) {
                 getServer().getPluginManager().registerEvents(new ShopListener(), this);
                 if (metrics.start()) {
                     getLogger().info("Metrics started.");
@@ -519,7 +522,7 @@ public class QuickShop extends JavaPlugin {
             try {
                 taxAccountId = UUID.fromString(getConfig().getString("tax-account"));
             } catch (IllegalArgumentException e) {
-                taxAccountId = Bukkit.getOfflinePlayer(getConfig().getString("tax-account")).getUniqueId();
+                this.getLogger().severe("tax-account must be in the form of a UUID");
             }
         }
         

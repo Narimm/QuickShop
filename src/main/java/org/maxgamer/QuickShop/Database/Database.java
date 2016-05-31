@@ -74,6 +74,9 @@ public class Database {
      * @param table
      *            The table to check for
      * @return True if the table is found
+     *
+     * @throws SQLException
+     *             If the connection is invalid.
      */
     public boolean hasTable(String table) throws SQLException {
         final ResultSet rs = getConnection().getMetaData().getTables(null, null, "%", null);
@@ -102,6 +105,7 @@ public class Database {
      * @param column
      *            The column
      * @return True if the given table has the given column
+     *
      * @throws SQLException
      *             If the database isn't connected
      */

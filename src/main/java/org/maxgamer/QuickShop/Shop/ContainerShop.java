@@ -104,8 +104,7 @@ public class ContainerShop implements Shop {
     /**
      * Returns the number of free spots in the chest for the particular item.
      * 
-     * @param stackSize
-     * @return
+     * @return and integer showing the remaining spaces
      */
     @Override
     public int getRemainingSpace() {
@@ -157,14 +156,7 @@ public class ContainerShop implements Shop {
 
         if (nextTo.matches(getItem())) {
             // They're both trading the same item
-            if (getShopType() == nextTo.getShopType()) {
-                // They're both buying or both selling => Not a double shop,
-                // just two shops.
-                return false;
-            } else {
-                // One is buying, one is selling.
-                return true;
-            }
+            return getShopType() != nextTo.getShopType();
         } else {
             return false;
         }
@@ -395,8 +387,6 @@ public class ContainerShop implements Shop {
      * 
      * @param p
      *            The player to buy from
-     * @param item
-     *            The itemStack to buy
      * @param amount
      *            The amount to buy
      */

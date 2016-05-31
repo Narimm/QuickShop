@@ -17,6 +17,7 @@ public class DatabaseHelper {
 
     /**
      * Verifies that all required columns exist.
+     * @param db  the database
      */
     public static void checkColumns(Database db) {
         PreparedStatement ps = null;
@@ -38,6 +39,7 @@ public class DatabaseHelper {
 
     /**
      * Creates the database table 'shops'.
+     * @param db the database
      * 
      * @throws SQLException
      *             If the connection is invalid.
@@ -54,7 +56,8 @@ public class DatabaseHelper {
 
     /**
      * Creates the database table 'messages'
-     * 
+     * @param db the database
+
      * @throws SQLException
      *             If the connection is invalid
      */

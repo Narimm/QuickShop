@@ -40,7 +40,7 @@ public class ShopManager {
     }
 
     /**
-     * @return Returns the HashMap<Player name, shopInfo>. Info contains what
+     * @return Returns the {@code HashMap<Player name, shopInfo>}. Info contains what
      *         their last question etc was.
      */
     public HashMap<String, Info> getActions() {
@@ -80,21 +80,21 @@ public class ShopManager {
     }
 
     /**
-     * Returns a hashmap of World -> Chunk -> Shop
+     * Returns a hashmap of World and  Chunk  and Shop
      * 
-     * @return a hashmap of World -> Chunk -> Shop
+     * @return a hashmap of World and Chunk and Shop
      */
     public HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> getShops() {
         return shops;
     }
 
     /**
-     * Returns a hashmap of Chunk -> Shop
+     * Returns a hashmap of Chunk and Shop
      * 
      * @param world
      *            The name of the world (case sensitive) to get the list of
      *            shops from
-     * @return a hashmap of Chunk -> Shop
+     * @return a hashmap of Chunk  and  Shop
      */
     public HashMap<ShopChunk, HashMap<Location, Shop>> getShops(String world) {
         return shops.get(world);
@@ -106,7 +106,7 @@ public class ShopManager {
      * @param c
      *            The chunk to search. Referencing doesn't matter, only
      *            coordinates and world are used.
-     * @return
+     * @return a Hashmap of Location and Shops
      */
     public HashMap<Location, Shop> getShops(Chunk c) {
         // long start = System.nanoTime();
@@ -235,7 +235,9 @@ public class ShopManager {
      * @param p
      *            The player to check
      * @param b
-     *            The block to check
+     *           The block to check
+     * @param bf
+     *           the blockface to check
      * @return True if they're allowed to place a shop there.
      */
     public boolean canBuildShop(Player p, Block b, BlockFace bf) {
@@ -269,11 +271,8 @@ public class ShopManager {
 
         final ShopPreCreateEvent spce = new ShopPreCreateEvent(p, b.getLocation());
         Bukkit.getPluginManager().callEvent(spce);
-        if (spce.isCancelled()) {
-            return false;
-        }
+        return !spce.isCancelled();
 
-        return true;
     }
 
     public void handleChat(final Player p, String msg) {

@@ -57,6 +57,7 @@ public class PlayerListener implements Listener {
      * Handles players left clicking a chest.
      * Left click a NORMAL chest with item : Send creation menu
      * Left click a SHOP chest : Send purchase menu
+     * @param e the event
      */
     @SuppressWarnings("deprecation")
     @EventHandler(ignoreCancelled = true)
@@ -153,6 +154,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     /**
      * Waits for a player to move too far from a shop, then cancels the menu.
+     * @param e the event
      */
     public void onMove(PlayerMoveEvent e) {
         if (e.isCancelled()) {

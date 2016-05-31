@@ -18,10 +18,9 @@ public class Info {
      *            The location they clicked (Block.getLocation())
      * @param action
      *            The action (ShopAction.*)
-     * @param material
-     *            The material they were holding
-     * @param data
-     *            The data value of the material
+     * @param item the itemstack
+     * @param last the block
+     *            The block of the material
      */
     public Info(Location loc, ShopAction action, ItemStack item, Block last) {
         this.loc = loc;
@@ -39,10 +38,10 @@ public class Info {
      *            The location they clicked (Block.getLocation())
      * @param action
      *            The action (ShopAction.*)
-     * @param material
-     *            The material they were holding
-     * @param data
-     *            The data value of the material
+     * @param item
+     *            The item they were holding
+     * @param last
+     *            The block of material
      * @param shop
      *            The shop they interacted with, or null if none
      */
@@ -75,11 +74,8 @@ public class Info {
         if (!this.shop.getLocation().equals(shop.getLocation())) {
             return true;
         }
-        if (!this.shop.matches(shop.getItem())) {
-            return true;
-        }
+        return !this.shop.matches(shop.getItem());
 
-        return false;
     }
 
     public ShopAction getAction() {

@@ -18,8 +18,8 @@ public class BufferStatement {
      *            The query to execute. E.g. INSERT INTO accounts (user, passwd)
      *            VALUES (?, ?)
      * @param values
-     *            The values to replace <bold>?</bold> with in
-     *            <bold>query</bold>. These are in order.
+     *            The values to replace ? with in
+     *            query. These are in order.
      */
     public BufferStatement(String query, Object... values) {
         this.query = query;
@@ -40,6 +40,8 @@ public class BufferStatement {
      *            The connection to prepare this on using
      *            con.prepareStatement(..)
      * @return The prepared statement, ready for execution.
+     * @throws SQLException
+     *             If the connection is invalid.
      */
     public PreparedStatement prepareStatement(Connection con) throws SQLException {
         PreparedStatement ps;
@@ -64,8 +66,8 @@ public class BufferStatement {
 
     /**
      * @return A string representation of this statement. Returns
-     *         <italic>"Query: " + query + ", values: " +
-     *         Arrays.toString(values).</italic>
+     *         "Query: " + query + ", values: " +
+     *         Arrays.toString(values).
      */
     @Override
     public String toString() {
