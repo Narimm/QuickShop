@@ -221,7 +221,7 @@ public class QuickShop extends JavaPlugin {
             final int res = Converter.convert();
 
             if (res < 0) {
-                System.out.println("Could not convert shops. Exitting.");
+                System.out.println("Could not convert shops. Exiting.");
                 return;
             }
             if (res > 0) {
