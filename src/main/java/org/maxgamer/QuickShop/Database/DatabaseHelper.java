@@ -1,25 +1,28 @@
 package org.maxgamer.QuickShop.Database;
 
+import com.avaje.ebean.annotation.Sql;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 public class DatabaseHelper {
-    public static void setup(Database db) throws SQLException {
+    public static void setup(Database db, Logger log) throws SQLException {
         if (!db.hasTable("shops")) {
             DatabaseHelper.createShopsTable(db);
         }
         if (!db.hasTable("messages")) {
             DatabaseHelper.createMessagesTable(db);
         }
-        DatabaseHelper.checkColumns(db);
+        DatabaseHelper.checkColumns(db, log);
     }
 
     /**
      * Verifies that all required columns exist.
      * @param db  the database
      */
-    public static void checkColumns(Database db) {
+    private static void checkColumns(Database db) {
         PreparedStatement ps = null;
         try {
             // V3.4.2
@@ -35,7 +38,17 @@ public class DatabaseHelper {
             ps.execute();
             ps.close();
         } catch (final SQLException e) {}
+
     }
+
+    public static void checkColumns(Database db, Logger log){
+        checkColumns(db);
+        try {
+            log.info(db.getConnection().getSchema());
+        }catch (final SQLException e){e.printStackTrace();}
+
+    }
+
 
     /**
      * Creates the database table 'shops'.

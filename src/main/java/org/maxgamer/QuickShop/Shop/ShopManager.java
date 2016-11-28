@@ -23,6 +23,8 @@ import org.maxgamer.QuickShop.Database.Database;
 import org.maxgamer.QuickShop.Util.MsgUtil;
 import org.maxgamer.QuickShop.Util.Util;
 
+import javax.annotation.Nullable;
+
 public class ShopManager {
     private final QuickShop                                                    plugin;
     private final HashMap<String, Info>                                        actions        = new HashMap<String, Info>(
@@ -82,7 +84,7 @@ public class ShopManager {
     /**
      * Returns a hashmap of World and  Chunk  and Shop
      * 
-     * @return a hashmap of World and Chunk and Shop
+     * @return a hashmap of World and Chunk and Shop can be @{code Null}
      */
     public HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> getShops() {
         return shops;
@@ -94,8 +96,9 @@ public class ShopManager {
      * @param world
      *            The name of the world (case sensitive) to get the list of
      *            shops from
-     * @return a hashmap of Chunk  and  Shop
+     * @return a hashmap of Chunk  and  Shop can be @{code Null}
      */
+    @Nullable
     public HashMap<ShopChunk, HashMap<Location, Shop>> getShops(String world) {
         return shops.get(world);
     }
@@ -106,7 +109,7 @@ public class ShopManager {
      * @param c
      *            The chunk to search. Referencing doesn't matter, only
      *            coordinates and world are used.
-     * @return a Hashmap of Location and Shops
+     * @return a Hashmap of Location and Shops can be @{code NULL}
      */
     public HashMap<Location, Shop> getShops(Chunk c) {
         // long start = System.nanoTime();
@@ -117,6 +120,13 @@ public class ShopManager {
         return shops;
     }
 
+    /**
+     *
+     * @param world World
+     * @param chunkX x coord
+     * @param chunkZ y coord
+     * @return a Hashmap of Location and Shops can be @{code Null}
+     */
     public HashMap<Location, Shop> getShops(String world, int chunkX, int chunkZ) {
         final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = this.getShops(world);
 

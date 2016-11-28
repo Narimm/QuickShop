@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import org.sqlite.JDBC;
 
 public class SQLiteCore implements DatabaseCore {
     private Connection                           connection;
@@ -41,7 +42,11 @@ public class SQLiteCore implements DatabaseCore {
             try {
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
-                return connection;
+                if(connection.isValid(2)){
+                    return connection;
+                }else {
+                    throw new SQLException("Connection is Not Valid");
+                }
             } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
                 return null;

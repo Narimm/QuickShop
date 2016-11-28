@@ -91,15 +91,15 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.9.4-R0.1-SNAPSHOT</version>
+			<version>1.11-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		
 		<!-- Vault -->
 		<dependency>
 	      <groupId>net.milkbowl.vault</groupId>
-	      <artifactId>Vault</artifactId>
-	      <version>1.5.6</version>
+	      <artifactId>VaultApi</artifactId>
+	      <version>1.6</version>
 	      <exclusions>
 	        <exclusion>
 	          <groupId>org.bukkit</groupId>
@@ -118,7 +118,7 @@
 	    <dependency>
 			<groupId>au.com.addstar</groupId>
 			<artifactId>Monolith</artifactId>
-			<version>1.4.2</version>
+			<version>1.4.4-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.spigotmc</groupId>
@@ -130,7 +130,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>QuickShop</finalName>
+		<finalName>QuickShop-${plugin.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

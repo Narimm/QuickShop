@@ -193,11 +193,14 @@ public class QuickShop extends JavaPlugin {
             } else {
                 // SQLite database - Doing this handles file creation
                 final DatabaseCore dbCore = new SQLiteCore(new File(getDataFolder(), "shops.db"));
+                if(dbCore.getConnection() != null){
+                    getLogger().info("SqLite: Valid");
+                }
                 database = new Database(dbCore);
             }
 
             // Make the database up to date
-            DatabaseHelper.setup(getDB());
+            DatabaseHelper.setup(getDB(),getLogger());
         } catch (final ConnectionException e) {
             e.printStackTrace();
             getLogger().severe("Error connecting to database. Aborting plugin load.");
