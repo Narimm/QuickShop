@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.worldcretornica.plotme_core.Plot;
+import com.worldcretornica.plotme_core.PlotMeCoreManager;
+import com.worldcretornica.plotme_core.api.ILocation;
+import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
 public class MsgUtil {
@@ -162,9 +167,20 @@ public class MsgUtil {
         p.sendMessage("");
         p.sendMessage("");
 
+        String shopOwner = shop.getOwner().getName();
+        if (shopOwner == null || shopOwner.isEmpty()) {
+            if (shop instanceof ContainerShop) {
+                // Use an alternative method to determine the plot owner
+                // This only works if the shop is in a PlotMe world and on a valid plot
+                shopOwner = ((ContainerShop) shop).getOwnerName();
+            } else {
+                shopOwner = "Unknown";
+            }
+        }
+
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
         p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.shop-information"));
-        p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.owner", shop.getOwner().getName()));
+        p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.owner", shopOwner));
         p.sendMessage(ChatColor.DARK_PURPLE + "| " + MsgUtil.getMessage("menu.item", shop.getDataName()));
 
         if (Util.isTool(items.getType())) {

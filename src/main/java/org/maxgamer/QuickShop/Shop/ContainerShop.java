@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import com.worldcretornica.plotme_core.Plot;
+import com.worldcretornica.plotme_core.PlotMeCoreManager;
+import com.worldcretornica.plotme_core.api.ILocation;
+import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -541,7 +545,34 @@ public class ContainerShop implements Shop {
      * @return the line for the owner text
      */
     private String getOwnerLine() {
-        return ChatColor.DARK_RED + getOwner().getName();
+        return ChatColor.DARK_RED + getOwnerName();
+    }
+
+    /**
+     * Returns the shop owner
+     *
+     * @return the name of the shop owner
+     */
+    public String getOwnerName() {
+        String shopOwner = getOwner().getName();
+        if (shopOwner == null || shopOwner.isEmpty()) {
+            // Use an alternative method to determine the plot owner
+            // This only works if the shop is in a PlotMe world and on a valid plot
+            ILocation loc = new BukkitLocation(getLocation());
+            PlotMeCoreManager PMCM = PlotMeCoreManager.getInstance();
+            if (PMCM == null) {
+                shopOwner = "Unknown";
+            } else {
+                Plot shopPlot = PMCM.getPlotById(PMCM.getPlotId(loc), loc.getWorld());
+                if (shopPlot != null) {
+                    shopOwner = shopPlot.getOwner();
+                } else {
+                    shopOwner = "Unknown";
+                }
+            }
+        }
+
+        return shopOwner;
     }
 
     /**
