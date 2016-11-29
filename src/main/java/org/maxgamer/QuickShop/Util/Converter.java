@@ -47,7 +47,7 @@ public class Converter {
         System.out.println("Converting shops to 4.6 format...");
         System.out.println("Preparing UUID cache");
         
-        HashMap<String, UUID> nameMap = new HashMap<String, UUID>();
+        HashMap<String, UUID> nameMap = new HashMap<>();
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
             nameMap.put(player.getName().toLowerCase(), player.getUniqueId());
         

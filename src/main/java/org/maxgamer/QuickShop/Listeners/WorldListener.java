@@ -34,7 +34,7 @@ public class WorldListener implements Listener {
         final World world = e.getWorld();
 
         // New world data
-        final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = new HashMap<ShopChunk, HashMap<Location, Shop>>(1);
+        final HashMap<ShopChunk, HashMap<Location, Shop>> inWorld = new HashMap<>(1);
 
         // Old world data
         final HashMap<ShopChunk, HashMap<Location, Shop>> oldInWorld = plugin.getShopManager()
@@ -47,7 +47,7 @@ public class WorldListener implements Listener {
         }
 
         for (final Entry<ShopChunk, HashMap<Location, Shop>> oldInChunk: oldInWorld.entrySet()) {
-            final HashMap<Location, Shop> inChunk = new HashMap<Location, Shop>(1);
+            final HashMap<Location, Shop> inChunk = new HashMap<>(1);
 
             // Put the new chunk were the old chunk was
             inWorld.put(oldInChunk.getKey(), inChunk);

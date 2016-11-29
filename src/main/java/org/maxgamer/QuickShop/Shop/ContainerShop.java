@@ -6,10 +6,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import com.worldcretornica.plotme_core.Plot;
-import com.worldcretornica.plotme_core.PlotMeCoreManager;
-import com.worldcretornica.plotme_core.api.ILocation;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,6 +32,9 @@ public class ContainerShop implements Shop {
     private DisplayItem     displayItem;
     private boolean         unlimited;
     private ShopType        shopType;
+
+
+    private Boolean         closed;
 
     private final QuickShop plugin;
 
@@ -84,12 +83,11 @@ public class ContainerShop implements Shop {
         this.item = item.clone();
         plugin = (QuickShop) Bukkit.getPluginManager().getPlugin("QuickShop");
         this.item.setAmount(1);
-
         if (plugin.display) {
             displayItem = new DisplayItem(this, this.item);
         }
-
         shopType = ShopType.SELLING;
+        this.closed = false;
     }
 
     /**
@@ -335,7 +333,7 @@ public class ContainerShop implements Shop {
             buy(p, -amount);
         }
         // Items to drop on floor
-        final ArrayList<ItemStack> floor = new ArrayList<ItemStack>(5);
+        final ArrayList<ItemStack> floor = new ArrayList<>(5);
         final Inventory pInv = p.getInventory();
         if (isUnlimited()) {
             final ItemStack item = this.item.clone();
@@ -525,17 +523,22 @@ public class ContainerShop implements Shop {
         if (Util.isLoaded(getLocation()) == false) {
             return;
         }
-
+        String owner = getOwnerLine();
         final String[] lines = new String[4];
-        lines[0] = getOwnerLine();
-        if (isBuying()) {
-            lines[1] = MsgUtil.getMessage("signs.buying", "" + getRemainingSpace());
+        if(!closed) {
+            lines[0] = owner;
+            if (isBuying()) {
+                lines[1] = MsgUtil.getMessage("signs.buying", "" + getRemainingSpace());
+            }
+            if (isSelling()) {
+                lines[1] = MsgUtil.getMessage("signs.selling", "" + getRemainingStock());
+            }
+            lines[2] = Util.getName(item);
+            lines[3] = MsgUtil.getMessage("signs.price", "" + getPrice());
+        }else{
+            lines[0] = "Shop is Closed";
+            this.setSignText(lines);
         }
-        if (isSelling()) {
-            lines[1] = MsgUtil.getMessage("signs.selling", "" + getRemainingStock());
-        }
-        lines[2] = Util.getName(item);
-        lines[3] = MsgUtil.getMessage("signs.price", "" + getPrice());
         this.setSignText(lines);
     }
 
@@ -551,27 +554,18 @@ public class ContainerShop implements Shop {
     /**
      * Returns the shop owner
      *
-     * @return the name of the shop owner
+     * @return the name of the shop owner or "Uknown" if the player doesnt exist
      */
     public String getOwnerName() {
         String shopOwner = getOwner().getName();
         if (shopOwner == null || shopOwner.isEmpty()) {
-            // Use an alternative method to determine the plot owner
-            // This only works if the shop is in a PlotMe world and on a valid plot
-            ILocation loc = new BukkitLocation(getLocation());
-            PlotMeCoreManager PMCM = PlotMeCoreManager.getInstance();
-            if (PMCM == null) {
-                shopOwner = "Unknown";
-            } else {
-                Plot shopPlot = PMCM.getPlotById(PMCM.getPlotId(loc), loc.getWorld());
-                if (shopPlot != null) {
-                    shopOwner = shopPlot.getOwner();
-                } else {
-                    shopOwner = "Unknown";
-                }
-            }
+            // we cannot retrieve the shop owner which means they have never visited this server
+            //no Player.dat exists. Disable the shop (but dont delete it)
+            setClosed(true);
+            shopOwner = "Unknown";
+        }else{
+            setClosed(false);
         }
-
         return shopOwner;
     }
 
@@ -605,7 +599,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public List<Sign> getSigns() {
-        final ArrayList<Sign> signs = new ArrayList<Sign>(1);
+        final ArrayList<Sign> signs = new ArrayList<>(1);
 
         if (getLocation().getWorld() == null) {
             return signs;
@@ -722,6 +716,16 @@ public class ContainerShop implements Shop {
         return Util.canBeShop(getLocation().getBlock());
     }
 
+    @Override
+    public boolean isClosed() {
+
+        return closed;
+    }
+
+    public void setClosed(Boolean closed) {
+        this.closed = closed;
+    }
+
     private void checkDisplay() {
         if (plugin.display == false) {
             return;
@@ -771,6 +775,9 @@ public class ContainerShop implements Shop {
                 disItem.removeDupe();
             } else if (item.getLocation().distanceSquared(dispLoc) > 1) {
                 item.teleport(dispLoc, TeleportCause.PLUGIN);
+            }
+            if(isClosed()){
+                disItem.remove();
             }
         }
     }

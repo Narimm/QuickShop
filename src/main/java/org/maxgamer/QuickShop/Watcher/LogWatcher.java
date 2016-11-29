@@ -13,7 +13,7 @@ import org.maxgamer.QuickShop.QuickShop;
 public class LogWatcher implements Runnable {
     private PrintStream             ps;
 
-    private final ArrayList<String> logs = new ArrayList<String>(5);
+    private final ArrayList<String> logs = new ArrayList<>(5);
     public BukkitTask               task;
 
     public LogWatcher(QuickShop plugin, File log) {

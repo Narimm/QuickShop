@@ -94,6 +94,10 @@ public class PlayerListener implements Listener {
         if (shop != null && p.hasPermission("quickshop.use") && (plugin.sneakTrade == false || p.isSneaking())) {
             shop.onClick();
             // Text menu
+            if(shop.isClosed()){
+                p.sendMessage(MsgUtil.getMessage("shop-is-closed"));
+                return;
+            }
             MsgUtil.sendShopInfo(p, shop);
             if (shop.isSelling()) {
                 p.sendMessage(MsgUtil.getMessage("how-many-buy"));
@@ -150,12 +154,11 @@ public class PlayerListener implements Listener {
             p.sendMessage(MsgUtil.getMessage("how-much-to-trade-for", Util.getName(info.getItem())));
         }
     }
-
-    @EventHandler(priority = EventPriority.HIGH)
     /**
      * Waits for a player to move too far from a shop, then cancels the menu.
      * @param e the event
      */
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMove(PlayerMoveEvent e) {
         if (e.isCancelled()) {
             return;

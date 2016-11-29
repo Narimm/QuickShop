@@ -130,7 +130,12 @@ public class QuickShop extends JavaPlugin {
     public Metrics getMetrics() {
         return metrics;
     }
-
+    /**
+     * Note
+     * If the server has Spout we can get the names of custom items.
+     * Latest SpoutPlugin http://get.spout.org/1412/SpoutPlugin.jar
+     * http://build.spout.org/view/Legacy/job/SpoutPlugin/1412/
+     */
     @Override
     public void onEnable() {
         QuickShop.instance = this;
@@ -334,11 +339,6 @@ public class QuickShop extends JavaPlugin {
             getLogger().severe("Shop.find-distance is too high! Pick a number under 100!");
         }
 
-        /**
-         * If the server has Spout we can get the names of custom items.
-         * Latest SpoutPlugin http://get.spout.org/1412/SpoutPlugin.jar
-         * http://build.spout.org/view/Legacy/job/SpoutPlugin/1412/
-         */
         if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
             getLogger().info("Found Spout...");
             useSpout = true;

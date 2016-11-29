@@ -158,7 +158,7 @@ public class Database {
      */
     public void copyTo(Database db) throws SQLException {
         ResultSet rs = getConnection().getMetaData().getTables(null, null, "%", null);
-        final List<String> tables = new LinkedList<String>();
+        final List<String> tables = new LinkedList<>();
         while (rs.next()) {
             tables.add(rs.getString("TABLE_NAME"));
         }

@@ -36,10 +36,10 @@ import com.google.common.collect.Maps;
 import au.com.addstar.monolith.StringTranslator;
 
 public class Util {
-    private static HashSet<Material> tools       = new HashSet<Material>();
-    private static HashSet<Material> blacklist   = new HashSet<Material>();
-    private static HashSet<Material> shoppables  = new HashSet<Material>();
-    private static HashSet<Material> transparent = new HashSet<Material>();
+    private static HashSet<Material> tools       = new HashSet<>();
+    private static HashSet<Material> blacklist   = new HashSet<>();
+    private static HashSet<Material> shoppables  = new HashSet<>();
+    private static HashSet<Material> transparent = new HashSet<>();
 
     private static QuickShop         plugin;
 

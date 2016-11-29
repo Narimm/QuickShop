@@ -27,11 +27,11 @@ import javax.annotation.Nullable;
 
 public class ShopManager {
     private final QuickShop                                                    plugin;
-    private final HashMap<String, Info>                                        actions        = new HashMap<String, Info>(
-                                                                                                      30);
+    private final HashMap<String, Info>                                        actions        = new HashMap<>(
+            30);
 
-    private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops          = new HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>>(
-                                                                                                      3);
+    private final HashMap<String, HashMap<ShopChunk, HashMap<Location, Shop>>> shops          = new HashMap<>(
+            3);
 
     public ShopManager(QuickShop plugin) {
         this.plugin = plugin;
@@ -169,7 +169,7 @@ public class ShopManager {
 
         // There's no world storage yet. We need to create that hashmap.
         if (inWorld == null) {
-            inWorld = new HashMap<ShopChunk, HashMap<Location, Shop>>(3);
+            inWorld = new HashMap<>(3);
             // Put it in the data universe
             this.getShops().put(world, inWorld);
         }
@@ -185,7 +185,7 @@ public class ShopManager {
 
         // That chunk data hasn't been created yet - Create it!
         if (inChunk == null) {
-            inChunk = new HashMap<Location, Shop>(1);
+            inChunk = new HashMap<>(1);
             // Put it in the world
             inWorld.put(shopChunk, inChunk);
         }
@@ -472,7 +472,10 @@ public class ShopManager {
                         p.sendMessage(MsgUtil.getMessage("chest-was-removed"));
                         return;
                     }
-
+                    if(shop.isClosed()){
+                        p.sendMessage(MsgUtil.getMessage("shop-is-closed"));
+                        return;
+                    }
                     if (info.hasChanged(shop)) {
                         p.sendMessage(MsgUtil.getMessage("shop-has-changed"));
                         return;

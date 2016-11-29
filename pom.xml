@@ -128,15 +128,6 @@
 			</exclusions>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- PlotMe -->
-		<dependency>
-			<groupId>com.worldcretornica</groupId>
-			<artifactId>PlotMe-Core</artifactId>
-			<version>0.16-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>

@@ -222,13 +222,22 @@ public interface Shop {
     boolean isValid();
 
     /**
+     * If a shop is closed then this will return true.
+     *
+     * @return boolean @{code true} if closed
+     */
+
+    boolean isClosed();
+
+    /**
      * This method is called whenever the shop should be unloaded.
      * E.g. for chest shops, they should clean up their own display items.
      * This method is called when the chunk the shop is stored in is unloaded.
-     * 
+     *
      * This should not remove the shop from memory (That is done by the caller,
      * if at all).
      */
+
     void onUnload();
 
     /**

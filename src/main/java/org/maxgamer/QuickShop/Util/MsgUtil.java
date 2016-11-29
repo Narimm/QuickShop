@@ -1,19 +1,5 @@
 package org.maxgamer.QuickShop.Util;
 
-import java.io.File;
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import com.worldcretornica.plotme_core.Plot;
-import com.worldcretornica.plotme_core.PlotMeCoreManager;
-import com.worldcretornica.plotme_core.api.ILocation;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,10 +11,20 @@ import org.maxgamer.QuickShop.QuickShop;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
 
+import java.io.File;
+import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 public class MsgUtil {
-    private static QuickShop                           plugin;
-    private static YamlConfiguration                   messages;
-    private static HashMap<UUID, LinkedList<String>>   player_messages = new HashMap<UUID, LinkedList<String>>();
+    private static QuickShop plugin;
+    private static YamlConfiguration messages;
+    private static HashMap<UUID, LinkedList<String>> player_messages = new HashMap<>();
 
     static {
         MsgUtil.plugin = QuickShop.instance;
@@ -70,7 +66,7 @@ public class MsgUtil {
             while (rs.next()) {
                 final String owner = rs.getString("owner");
                 final String message = rs.getString("message");
-                
+
                 UUID id;
                 try {
                     id = UUID.fromString(owner);
@@ -81,7 +77,7 @@ public class MsgUtil {
 
                 LinkedList<String> msgs = MsgUtil.player_messages.get(id);
                 if (msgs == null) {
-                    msgs = new LinkedList<String>();
+                    msgs = new LinkedList<>();
                     MsgUtil.player_messages.put(id, msgs);
                 }
 
@@ -94,20 +90,18 @@ public class MsgUtil {
     }
 
     /**
-     * @param player
-     *            The name of the player to message
-     * @param message
-     *            The message to send them
-     *            Sends the given player a message if they're online.
-     *            Else, if they're not online, queues it for them in the
-     *            database.
+     * @param player  The name of the player to message
+     * @param message The message to send them
+     *                Sends the given player a message if they're online.
+     *                Else, if they're not online, queues it for them in the
+     *                database.
      */
     @SuppressWarnings("deprecation")
     public static void send(OfflinePlayer player, String message) {
         if (!player.isOnline()) {
             LinkedList<String> msgs = MsgUtil.player_messages.get(player);
             if (msgs == null) {
-                msgs = new LinkedList<String>();
+                msgs = new LinkedList<>();
                 MsgUtil.player_messages.put(player.getUniqueId(), msgs);
             }
             msgs.add(message);
@@ -134,9 +128,8 @@ public class MsgUtil {
 
     /**
      * Empties the queue of messages a player has and sends them to the player.
-     * 
-     * @param p
-     *            The player to message
+     *
+     * @param p The player to message
      * @return true if success, false if the player is offline or null
      */
     public static boolean flush(Player p) {
@@ -144,7 +137,7 @@ public class MsgUtil {
             final LinkedList<String> msgs = MsgUtil.player_messages.get(p.getUniqueId());
 
             if (msgs != null) {
-                for (final String msg: msgs) {
+                for (final String msg : msgs) {
                     p.sendMessage(msg);
                 }
 
@@ -187,7 +180,7 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "| "
                     + MsgUtil.getMessage("menu.damage-percent-remaining", Util.getToolPercentage(items)));
         }
-        
+
         Map<String, Object> data = Util.getData(items);
         for (Entry<String, Object> entry : data.entrySet()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "| "
@@ -214,25 +207,25 @@ public class MsgUtil {
         if (enchs != null && !enchs.isEmpty()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
-            for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
+            for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
                         + entries.getValue());
             }
         }
-            if (items.getItemMeta() instanceof EnchantmentStorageMeta) {
-                final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) items.getItemMeta();
-                stor.getStoredEnchants();
+        if (items.getItemMeta() instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) items.getItemMeta();
+            stor.getStoredEnchants();
 
-                enchs = stor.getStoredEnchants();
-                if (enchs != null && !enchs.isEmpty()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------"
-                            + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
-                    for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
-                        p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
-                                + " " + entries.getValue());
-                    }
+            enchs = stor.getStoredEnchants();
+            if (enchs != null && !enchs.isEmpty()) {
+                p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------"
+                        + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
+                for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
+                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
+                            + " " + entries.getValue());
                 }
             }
+        }
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
     }
 
@@ -243,13 +236,13 @@ public class MsgUtil {
         p.sendMessage(ChatColor.DARK_PURPLE
                 + "| "
                 + MsgUtil.getMessage("menu.item-name-and-price", "" + amount, shop.getDataName(),
-                        Util.format((amount * shop.getPrice()))));
+                Util.format((amount * shop.getPrice()))));
 
         Map<Enchantment, Integer> enchs = shop.getItem().getItemMeta().getEnchants();
         if (enchs != null && !enchs.isEmpty()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
-            for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
+            for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
                         + entries.getValue());
             }
@@ -259,7 +252,7 @@ public class MsgUtil {
         if (enchs != null && !enchs.isEmpty()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------" + MsgUtil.getMessage("menu.stored-enchants")
                     + "--------------------+");
-            for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
+            for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
                         + entries.getValue());
             }
@@ -276,7 +269,7 @@ public class MsgUtil {
                 if (enchs != null && !enchs.isEmpty()) {
                     p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------"
                             + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
-                    for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
+                    for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
                         p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
                                 + " " + entries.getValue());
                     }
@@ -296,7 +289,7 @@ public class MsgUtil {
         p.sendMessage(ChatColor.DARK_PURPLE
                 + "| "
                 + MsgUtil.getMessage("menu.item-name-and-price", "" + amount, shop.getDataName(),
-                        Util.format((amount * shop.getPrice()))));
+                Util.format((amount * shop.getPrice()))));
 
         if (MsgUtil.plugin.getConfig().getBoolean("show-tax")) {
             final double tax = MsgUtil.plugin.getConfig().getDouble("tax");
@@ -315,25 +308,25 @@ public class MsgUtil {
         if (enchs != null && !enchs.isEmpty()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
-            for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
+            for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
                 p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
                         + entries.getValue());
             }
         }
-            if (shop.getItem().getItemMeta() instanceof EnchantmentStorageMeta) {
-                final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) shop.getItem().getItemMeta();
-                stor.getStoredEnchants();
+        if (shop.getItem().getItemMeta() instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta stor = (EnchantmentStorageMeta) shop.getItem().getItemMeta();
+            stor.getStoredEnchants();
 
-                enchs = stor.getStoredEnchants();
-                if (enchs != null && !enchs.isEmpty()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------"
-                            + MsgUtil.getMessage("menu.stored-enchants") + "-----------------------+");
-                    for (final Entry<Enchantment, Integer> entries: enchs.entrySet()) {
-                        p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
-                                + " " + entries.getValue());
-                    }
+            enchs = stor.getStoredEnchants();
+            if (enchs != null && !enchs.isEmpty()) {
+                p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------"
+                        + MsgUtil.getMessage("menu.stored-enchants") + "-----------------------+");
+                for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
+                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
+                            + " " + entries.getValue());
                 }
             }
+        }
 
         p.sendMessage(ChatColor.DARK_PURPLE + "+---------------------------------------------------+");
     }
@@ -349,7 +342,15 @@ public class MsgUtil {
         }
 
         for (int i = 0; i < args.length; i++) {
-            raw = raw.replace("{" + i + "}", args[i]);
+            if ((args[i]) != null) {
+                try {
+                    raw = raw.replace("{" + i + "}", args[i]);
+                } catch (NullPointerException e) {
+                    raw = raw.replace("{" + i + "}", "NULL");
+                    plugin.getLogger().warning("Invalid Message: Argument cannot be null, Msg:" + loc + "Argument #:" + i);
+                    e.printStackTrace();
+                }
+            }
         }
         return raw;
     }

@@ -26,7 +26,7 @@ public class ItemWatcher implements Runnable {
 
     @Override
     public void run() {
-        final List<Shop> toRemove = new ArrayList<Shop>(1);
+        final List<Shop> toRemove = new ArrayList<>(1);
         for (final Entry<String, HashMap<ShopChunk, HashMap<Location, Shop>>> inWorld: plugin.getShopManager()
                 .getShops().entrySet()) {
             // This world

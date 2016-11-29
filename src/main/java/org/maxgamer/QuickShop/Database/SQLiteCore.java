@@ -14,7 +14,7 @@ public class SQLiteCore implements DatabaseCore {
     private final File                           dbFile;
     private volatile Thread                      watcher;
 
-    private volatile LinkedList<BufferStatement> queue = new LinkedList<BufferStatement>();
+    private volatile LinkedList<BufferStatement> queue = new LinkedList<>();
 
     public SQLiteCore(File dbFile) {
         this.dbFile = dbFile;
