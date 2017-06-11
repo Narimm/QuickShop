@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.addstar</groupId>
 	<artifactId>quickshop</artifactId>
-	<version>4.8-SNAPSHOT</version>
+	<version>4.8.0-SNAPSHOT</version>
 	<name>QuickShop</name>
 	<properties>
 		<build.number />
@@ -69,14 +69,14 @@
 
 		<!-- Addstar repos -->
 		<repository>
-			<id>addstar-ext-release</id>
+			<id>addstar-release-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 		<repository>
-			<id>addstar-ext-snapshot</id>
+			<id>addstar-snapshot-repo</id>
 			<url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.11-R0.1-SNAPSHOT</version>
+			<version>1.12-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		

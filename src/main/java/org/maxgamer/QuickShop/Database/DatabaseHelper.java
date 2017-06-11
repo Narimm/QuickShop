@@ -1,7 +1,5 @@
 package org.maxgamer.QuickShop.Database;
 
-import com.avaje.ebean.annotation.Sql;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;

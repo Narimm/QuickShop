@@ -13,6 +13,7 @@ import org.maxgamer.QuickShop.Shop.Shop;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class MsgUtil {
 
         // Load default messages
         final InputStream defMessageStream = MsgUtil.plugin.getResource("messages.yml");
-        final YamlConfiguration defMessages = YamlConfiguration.loadConfiguration(defMessageStream);
+        final YamlConfiguration defMessages = YamlConfiguration.loadConfiguration(new InputStreamReader(defMessageStream));
         MsgUtil.messages.setDefaults(defMessages);
 
         // Parse colour codes

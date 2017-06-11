@@ -171,10 +171,8 @@ public class QS implements CommandExecutor {
                 }
             }
             sender.sendMessage(MsgUtil.getMessage("not-looking-at-shop"));
-            return;
         } else {
             sender.sendMessage(MsgUtil.getMessage("no-permission"));
-            return;
         }
     }
 
@@ -231,10 +229,8 @@ public class QS implements CommandExecutor {
                 }
             }
             sender.sendMessage(MsgUtil.getMessage("not-looking-at-shop"));
-            return;
         } else {
             sender.sendMessage(MsgUtil.getMessage("no-permission"));
-            return;
         }
     }
 
@@ -289,10 +285,8 @@ public class QS implements CommandExecutor {
             p.sendMessage(MsgUtil.getMessage("nearby-shop-this-way",
                     "" + (int) Math.floor(Math.sqrt(minDistanceSquared))));
 
-            return;
         } else {
             sender.sendMessage(MsgUtil.getMessage("no-permission"));
-            return;
         }
     }
 
@@ -336,7 +330,6 @@ public class QS implements CommandExecutor {
             return;
         }
         sender.sendMessage(MsgUtil.getMessage("no-permission"));
-        return;
     }
 
     private void setPrice(CommandSender sender, String[] args) {
@@ -424,7 +417,6 @@ public class QS implements CommandExecutor {
             return;
         }
         sender.sendMessage(MsgUtil.getMessage("no-permission"));
-        return;
     }
 
     private void clean(CommandSender sender) {
@@ -452,7 +444,6 @@ public class QS implements CommandExecutor {
             return;
         }
         sender.sendMessage(MsgUtil.getMessage("no-permission"));
-        return;
     }
 
     private void reload(CommandSender sender) {
@@ -463,7 +454,6 @@ public class QS implements CommandExecutor {
             return;
         }
         sender.sendMessage(MsgUtil.getMessage("no-permission"));
-        return;
     }
 
     @Override
