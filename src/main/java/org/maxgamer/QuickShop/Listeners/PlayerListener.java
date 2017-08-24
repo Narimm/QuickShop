@@ -13,11 +13,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -91,7 +91,7 @@ public class PlayerListener implements Listener {
             }
         }
         // Purchase handling
-        if (shop != null && p.hasPermission("quickshop.use") && (plugin.sneakTrade == false || p.isSneaking())) {
+        if (shop != null && p.hasPermission("quickshop.use") && (!plugin.sneakTrade || p.isSneaking())) {
             shop.onClick();
             // Text menu
             if(shop.isClosed()){
@@ -117,7 +117,7 @@ public class PlayerListener implements Listener {
         // Handles creating shops
         else if (shop == null && item != null && item.getType() != Material.AIR
                 && p.hasPermission("quickshop.create.sell") && Util.canBeShop(b)
-                && p.getGameMode() != GameMode.CREATIVE && (plugin.sneakCreate == false || p.isSneaking())) {
+                && p.getGameMode() != GameMode.CREATIVE && (!plugin.sneakCreate || p.isSneaking())) {
             if (!plugin.getShopManager().canBuildShop(p, b, e.getBlockFace())) {
                 // As of the new checking system, most plugins will tell the
                 // player why they can't create a shop there.
@@ -205,7 +205,10 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerPickup(PlayerPickupItemEvent e) {
+    public void onPlayerPickup(EntityPickupItemEvent e) {
+        if(!(e.getEntity() instanceof Player)){
+            return;
+        }
         final ItemStack stack = e.getItem().getItemStack();
         try {
             if (stack.getItemMeta().getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {

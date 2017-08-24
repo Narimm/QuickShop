@@ -28,10 +28,7 @@ public class Economy implements EconomyCore {
      */
     @Override
     public boolean deposit(OfflinePlayer player, double amount) {
-        if (player == null) {
-            return false;
-        }
-        return core.deposit(player, amount);
+        return player != null && core.deposit(player, amount);
     }
 
     /**

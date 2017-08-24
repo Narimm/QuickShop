@@ -156,12 +156,8 @@ public class ContainerShop implements Shop {
             return false;
         }
 
-        if (nextTo.matches(getItem())) {
-            // They're both trading the same item
-            return getShopType() != nextTo.getShopType();
-        } else {
-            return false;
-        }
+        // They're both trading the same item
+        return nextTo.matches(getItem()) && getShopType() != nextTo.getShopType();
     }
 
     /**
@@ -378,8 +374,8 @@ public class ContainerShop implements Shop {
             getInventory().setContents(chestContents);
         }
 
-        for (int i = 0; i < floor.size(); i++) {
-            p.getWorld().dropItem(p.getLocation(), floor.get(i));
+        for (ItemStack aFloor : floor) {
+            p.getWorld().dropItem(p.getLocation(), aFloor);
         }
     }
 

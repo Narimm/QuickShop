@@ -1,47 +1,72 @@
 package org.maxgamer.QuickShop.Metrics;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.maxgamer.QuickShop.QuickShop;
-import org.maxgamer.QuickShop.Metrics.Metrics.Graph;
 import org.maxgamer.QuickShop.Shop.ShopPurchaseEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
+import static org.maxgamer.QuickShop.Metrics.ShopListener.ShopActions.PURCHASES;
+import static org.maxgamer.QuickShop.Metrics.ShopListener.ShopActions.SALES;
+
 public class ShopListener implements Listener {
-    int sales     = 0;
-    int purchases = 0;
+Map<String, Integer> store = new HashMap<>();
+public  Metrics.MultiLineChart chart;
 
-    public ShopListener() {
-        final Metrics metrics = QuickShop.instance.getMetrics();
+    public ShopListener(Metrics metrics) {
 
-        final Graph graph = metrics.createGraph("Sales vs Purchases");
-
-        graph.addPlotter(new Metrics.Plotter("Sales") {
+        chart = new Metrics.MultiLineChart("", new Callable<Map<String, Integer>>() {
             @Override
-            public int getValue() {
-                // Returns the current sales # and sets it back to 0
-                final int oldsales = sales;
-                sales = 0;
-                return oldsales;
+            public Map<String, Integer> call() throws Exception {
+                Map <String, Integer> result = new HashMap<>(store.size());
+                result.putAll(store);
+                result.put("server",1);
+                store.clear();
+                return result;
             }
-        });
-
-        graph.addPlotter(new Metrics.Plotter("Purchases") {
-            @Override
-            public int getValue() {
-                // Returns the current purchases # and sets it back to 0
-                final int oldpurchases = purchases;
-                purchases = 0;
-                return oldpurchases;
-            }
-        });
+        }
+        );
+        metrics.addCustomChart(chart);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
     public void onPurchase(ShopPurchaseEvent e) {
+        String action;
         if (e.getShop().isSelling()) {
-            sales += e.getAmount();
+             action= SALES.toString();
+
         } else {
-            purchases += e.getAmount();
+            action = PURCHASES.toString();
+        }
+        Integer current = store.getOrDefault(action,0);
+        store.put(action,current+e.getAmount() );
+    }
+
+    protected enum ShopActions{
+
+        SALES("Sales"),
+        PURCHASES("Purchases");
+
+        private final String text;
+
+        /**
+         * @param text
+         */
+        ShopActions(final String text) {
+            this.text = text;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+            return text;
         }
     }
+
 }

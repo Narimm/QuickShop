@@ -8,6 +8,7 @@
 		<build.number />
 		<plugin.version>${project.version}-${build.number}</plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spigot.version>1.12.1-R0.1-SNAPSHOT</spigot.version>
 	</properties>
 	<scm>
 		<connection>scm:git:git@github.com:AddstarMC/Quickshop.git</connection>
@@ -85,6 +86,10 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+        <repository>
+            <id>bstats-repo</id>
+            <url>http://repo.bstats.org/content/repositories/releases/</url>
+        </repository>
 	</repositories>
 
 	<dependencies>
@@ -92,7 +97,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.12-R0.1-SNAPSHOT</version>
+			<version>${spigot.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -119,7 +124,7 @@
 	    <dependency>
 			<groupId>au.com.addstar</groupId>
 			<artifactId>Monolith</artifactId>
-			<version>1.4.4-SNAPSHOT</version>
+			<version>1.4.6-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.spigotmc</groupId>
@@ -128,10 +133,14 @@
 			</exclusions>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>1.2</version>
+        </dependency>
 	</dependencies>
 
 	<build>
-		<finalName>QuickShop-${plugin.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -148,6 +157,33 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.bstats:*</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <!-- Replace this with your package! -->
+                            <shadedPattern>org.maxgamer.Metrics</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>

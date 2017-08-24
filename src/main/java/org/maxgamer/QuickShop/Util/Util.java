@@ -270,10 +270,7 @@ public class Util {
      */
     public static boolean canBeShop(Block b) {
         final BlockState bs = b.getState();
-        if (bs instanceof InventoryHolder == false) {
-            return false;
-        }
-        return Util.shoppables.contains(bs.getType());
+        return bs instanceof InventoryHolder != false && Util.shoppables.contains(bs.getType());
     }
 
     /**
@@ -452,7 +449,7 @@ public class Util {
     }
 
     public static String toRomain(Integer value) {
-        return Util.toRoman(value.intValue());
+        return Util.toRoman(value);
     }
 
     private static final String[] ROMAN   = {"X", "IX", "V", "IV", "I"};

@@ -1,7 +1,6 @@
 package org.maxgamer.QuickShop;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,7 +41,6 @@ import org.maxgamer.QuickShop.Listeners.ChunkListener;
 import org.maxgamer.QuickShop.Listeners.LockListener;
 import org.maxgamer.QuickShop.Listeners.PlayerListener;
 import org.maxgamer.QuickShop.Listeners.WorldListener;
-import org.maxgamer.QuickShop.Metrics.Metrics;
 import org.maxgamer.QuickShop.Metrics.ShopListener;
 import org.maxgamer.QuickShop.Shop.ContainerShop;
 import org.maxgamer.QuickShop.Shop.Shop;
@@ -182,7 +181,41 @@ public class QuickShop extends JavaPlugin {
             }
             getLogger().info(limits.toString());
         }
+        if(!setupDatabase())return;
+        loadShopsFromDatabase();
+        MsgUtil.loadTransactionMessages();
+        MsgUtil.clean();
+        // Register events
+        getLogger().info("Registering Listeners");
+        Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
+        Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
+        if (display) {
+            Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
+        }
+        Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
+        chatListener = new ChatListener(this);
+        Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
 
+        // Command handlers
+        final QS commandExecutor = new QS(this);
+        getCommand("qs").setExecutor(commandExecutor);
+
+        if (getConfig().getInt("shop.find-distance") > 100) {
+            getLogger().severe("Shop.find-distance is too high! Pick a number under 100!");
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+            getLogger().info("Found Spout...");
+            useSpout = true;
+        } else {
+            useSpout = false;
+        }
+        metrics= new Metrics(this);
+        getServer().getPluginManager().registerEvents(new ShopListener(metrics), this);
+        getLogger().info("QuickShop loaded!");
+    }
+
+    private boolean setupDatabase(){
         try {
             final ConfigurationSection dbCfg = getConfig().getConfigurationSection("database");
             if (dbCfg.getBoolean("mysql")) {
@@ -206,18 +239,22 @@ public class QuickShop extends JavaPlugin {
 
             // Make the database up to date
             DatabaseHelper.setup(getDB(),getLogger());
+            return true;
         } catch (final ConnectionException e) {
             e.printStackTrace();
             getLogger().severe("Error connecting to database. Aborting plugin load.");
             getServer().getPluginManager().disablePlugin(this);
-            return;
+            return false;
         } catch (final SQLException e) {
             e.printStackTrace();
             getLogger().severe("Error setting up database. Aborting plugin load.");
             getServer().getPluginManager().disablePlugin(this);
-            return;
+            return false;
         }
+    }
 
+
+    private void loadShopsFromDatabase(){
         /* Load shops from database to memory */
         int count = 0; // Shops count
         Connection con;
@@ -313,54 +350,8 @@ public class QuickShop extends JavaPlugin {
             getLogger().severe("Could not load shops.");
         }
         getLogger().info("Loaded " + count + " shops.");
-
-        MsgUtil.loadTransactionMessages();
-        MsgUtil.clean();
-
-        // Register events
-        getLogger().info("Registering Listeners");
-        Bukkit.getServer().getPluginManager().registerEvents(blockListener, this);
-        Bukkit.getServer().getPluginManager().registerEvents(playerListener, this);
-
-        if (display) {
-            Bukkit.getServer().getPluginManager().registerEvents(chunkListener, this);
-        }
-
-        Bukkit.getServer().getPluginManager().registerEvents(worldListener, this);
-
-        chatListener = new ChatListener(this);
-        Bukkit.getServer().getPluginManager().registerEvents(chatListener, this);
-
-        // Command handlers
-        final QS commandExecutor = new QS(this);
-        getCommand("qs").setExecutor(commandExecutor);
-
-        if (getConfig().getInt("shop.find-distance") > 100) {
-            getLogger().severe("Shop.find-distance is too high! Pick a number under 100!");
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
-            getLogger().info("Found Spout...");
-            useSpout = true;
-        } else {
-            useSpout = false;
-        }
-
-        try {
-            metrics = new Metrics(this);
-
-            if (!metrics.isOptOut()) {
-                getServer().getPluginManager().registerEvents(new ShopListener(), this);
-                if (metrics.start()) {
-                    getLogger().info("Metrics started.");
-                }
-            }
-        } catch (final IOException e) {
-            getLogger().info("Could not start metrics.");
-        }
-
-        getLogger().info("QuickShop loaded!");
     }
+
 
     /** Reloads QuickShops config */
     @Override
@@ -377,6 +368,11 @@ public class QuickShop extends JavaPlugin {
 
         MsgUtil.loadCfgMessages();
     }
+
+    public void loadConfig(){
+
+    }
+
 
     /**
      * Tries to load the economy and its core. If this fails, it will try to use
