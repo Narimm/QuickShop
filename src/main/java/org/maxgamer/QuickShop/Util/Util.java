@@ -423,7 +423,7 @@ public class Util {
         if (!ugly.contains("_") && (!ugly.equals(ugly.toUpperCase()))) {
             return ugly;
         }
-        String fin = "";
+        StringBuilder fin = new StringBuilder();
         ugly = ugly.toLowerCase();
         if (ugly.contains("_")) {
             final String[] splt = ugly.split("_");
@@ -434,18 +434,18 @@ public class Util {
                     continue;
 
                 if (s.length() == 1)
-                    fin += Character.toUpperCase(s.charAt(0));
+                    fin.append(Character.toUpperCase(s.charAt(0)));
                 else
-                    fin += Character.toUpperCase(s.charAt(0)) + s.substring(1);
+                    fin.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1));
 
                 if (i < splt.length) {
-                    fin += " ";
+                    fin.append(" ");
                 }
             }
         } else {
-            fin += Character.toUpperCase(ugly.charAt(0)) + ugly.substring(1);
+            fin.append(Character.toUpperCase(ugly.charAt(0))).append(ugly.substring(1));
         }
-        return fin;
+        return fin.toString();
     }
 
     public static String toRomain(Integer value) {
@@ -468,16 +468,16 @@ public class Util {
         if (n <= 0 || n >= 40) {
             return "" + n;
         }
-        String roman = "";
+        StringBuilder roman = new StringBuilder();
 
         for (int i = 0; i < Util.ROMAN.length; i++) {
             while (n >= Util.DECIMAL[i]) {
                 n -= Util.DECIMAL[i];
-                roman += Util.ROMAN[i];
+                roman.append(Util.ROMAN[i]);
             }
         }
 
-        return roman;
+        return roman.toString();
     }
     
     private static String getRecordName(Material record) {
@@ -554,9 +554,9 @@ public class Util {
         if (!noEffects)  {
             PotionEffect maineffect = potionEffects.get(0);
             prefix += maineffect.getType().getName() + ",Duration="+maineffect.getDuration()+ "Amplifier=" + maineffect.getAmplifier();
-            String effects = "Full Effect List -- ";
+            StringBuilder effects = new StringBuilder("Full Effect List -- ");
             for (final PotionEffect effect: potionEffects) {
-                effects += " Effect:"+effect.getType().getName()+" Amp:" +effect.getAmplifier() + " Dur:"+effect.getDuration();
+                effects.append(" Effect:").append(effect.getType().getName()).append(" Amp:").append(effect.getAmplifier()).append(" Dur:").append(effect.getDuration());
             }
             return prefix + effects;
         }

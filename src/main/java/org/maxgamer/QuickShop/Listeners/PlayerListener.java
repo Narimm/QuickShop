@@ -190,12 +190,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(final PlayerJoinEvent e) {
         // Notify the player any messages they were sent
-        Bukkit.getScheduler().runTaskLater(QuickShop.instance, new Runnable() {
-            @Override
-            public void run() {
-                MsgUtil.flush(e.getPlayer());
-            }
-        }, 60);
+        Bukkit.getScheduler().runTaskLater(QuickShop.instance, () -> MsgUtil.flush(e.getPlayer()), 60);
     }
 
     @EventHandler
@@ -215,7 +210,7 @@ public class PlayerListener implements Listener {
                 e.setCancelled(true);
                 // You shouldn't be able to pick up that...
             }
-        } catch (final NullPointerException ex) {} // if meta/displayname/stack
+        } catch (final NullPointerException ignored) {} // if meta/displayname/stack
                                                    // is null. We don't really
                                                    // care in that case.
     }

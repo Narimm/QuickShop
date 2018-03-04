@@ -76,11 +76,7 @@ public class MsgUtil {
                     continue;
                 }
 
-                LinkedList<String> msgs = MsgUtil.player_messages.get(id);
-                if (msgs == null) {
-                    msgs = new LinkedList<>();
-                    MsgUtil.player_messages.put(id, msgs);
-                }
+                LinkedList<String> msgs = MsgUtil.player_messages.computeIfAbsent(id, k -> new LinkedList<>());
 
                 msgs.add(message);
             }

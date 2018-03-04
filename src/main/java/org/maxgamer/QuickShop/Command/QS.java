@@ -57,7 +57,7 @@ public class QS implements CommandExecutor {
     }
 
     private void remove(CommandSender sender, String[] args) {
-        if (sender instanceof Player == false) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players may use that command.");
             return;
         }
@@ -124,7 +124,7 @@ public class QS implements CommandExecutor {
 
             final File file = new File(plugin.getDataFolder(), "shops.db");
             if (file.exists()) {
-                if (file.delete() == false) {
+                if (!file.delete()) {
                     sender.sendMessage(ChatColor.RED
                             + "Warning: Failed to delete old shops.db file. This may cause errors.");
                 }
@@ -243,7 +243,7 @@ public class QS implements CommandExecutor {
 
             final StringBuilder sb = new StringBuilder(args[1]);
             for (int i = 2; i < args.length; i++) {
-                sb.append(" " + args[i]);
+                sb.append(" ").append(args[i]);
             }
             String lookFor = sb.toString();
             lookFor = lookFor.toLowerCase();

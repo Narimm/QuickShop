@@ -801,12 +801,12 @@ public class ContainerShop implements Shop {
         final StringBuilder sb = new StringBuilder("Shop "
                 + (loc.getWorld() == null ? "unloaded world" : loc.getWorld().getName()) + "(" + loc.getBlockX() + ", "
                 + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
-        sb.append(" Owner: " + getOwner());
+        sb.append(" Owner: ").append(getOwner());
         if (isUnlimited()) {
             sb.append(" Unlimited: true");
         }
-        sb.append(" Price: " + getPrice());
-        sb.append("Item: " + getItem().toString());
+        sb.append(" Price: ").append(getPrice());
+        sb.append("Item: ").append(getItem().toString());
 
         return sb.toString();
     }

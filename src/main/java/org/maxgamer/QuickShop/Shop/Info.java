@@ -68,10 +68,7 @@ public class Info {
         if (!this.shop.getOwner().equals(shop.getOwner())) {
             return true;
         }
-        if (this.shop.getPrice() != shop.getPrice()) {
-            return true;
-        }
-        return !this.shop.getLocation().equals(shop.getLocation()) || !this.shop.matches(shop.getItem());
+        return this.shop.getPrice() != shop.getPrice() || !this.shop.getLocation().equals(shop.getLocation()) || !this.shop.matches(shop.getItem());
 
     }
 

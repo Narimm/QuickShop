@@ -1,6 +1,7 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -52,7 +53,7 @@ public class DisplayItem {
         
         ItemMeta meta = iStack.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "QuickShop ");
-        meta.setLore(Arrays.asList(UUID.randomUUID().toString()));
+        meta.setLore(Collections.singletonList(UUID.randomUUID().toString()));
         iStack.setItemMeta(meta);
 
         item = shop.getLocation().getWorld().dropItem(dispLoc, iStack);

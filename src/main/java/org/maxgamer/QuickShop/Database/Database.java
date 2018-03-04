@@ -181,18 +181,18 @@ public class Database {
             int n = 0;
 
             // Build the query
-            String query = "INSERT INTO " + table + " VALUES (";
+            StringBuilder query = new StringBuilder("INSERT INTO " + table + " VALUES (");
             // Append another placeholder for the value
-            query += "?";
+            query.append("?");
             for (int i = 2; i <= rs.getMetaData().getColumnCount(); i++) {
                 // Add the rest of the placeholders and values. This is so we
                 // have (?, ?, ?) and not (?, ?, ?, ).
-                query += ", ?";
+                query.append(", ?");
             }
             // End the query
-            query += ")";
+            query.append(")");
 
-            final PreparedStatement ps = db.getConnection().prepareStatement(query);
+            final PreparedStatement ps = db.getConnection().prepareStatement(query.toString());
             while (rs.next()) {
                 n++;
 

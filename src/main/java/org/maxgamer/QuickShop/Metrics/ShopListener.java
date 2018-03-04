@@ -19,15 +19,12 @@ public  Metrics.MultiLineChart chart;
 
     public ShopListener(Metrics metrics) {
 
-        chart = new Metrics.MultiLineChart("", new Callable<Map<String, Integer>>() {
-            @Override
-            public Map<String, Integer> call() throws Exception {
-                Map <String, Integer> result = new HashMap<>(store.size());
-                result.putAll(store);
-                result.put("server",1);
-                store.clear();
-                return result;
-            }
+        chart = new Metrics.MultiLineChart("Stores", () -> {
+            Map <String, Integer> result = new HashMap<>(store.size());
+            result.putAll(store);
+            result.put("server",1);
+            store.clear();
+            return result;
         }
         );
         metrics.addCustomChart(chart);

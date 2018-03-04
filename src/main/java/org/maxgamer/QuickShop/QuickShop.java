@@ -210,8 +210,11 @@ public class QuickShop extends JavaPlugin {
         } else {
             useSpout = false;
         }
-        metrics= new Metrics(this);
-        getServer().getPluginManager().registerEvents(new ShopListener(metrics), this);
+        boolean useMetrics = getConfig().getBoolean("metrics.enabled", true);
+        if(useMetrics) {
+            metrics = new Metrics(this);
+            getServer().getPluginManager().registerEvents(new ShopListener(metrics), this);
+        }
         getLogger().info("QuickShop loaded!");
     }
 
@@ -409,12 +412,7 @@ public class QuickShop extends JavaPlugin {
             e.printStackTrace();
             System.out.println("QuickShop does not know how to hook into " + econ + "! Using Vault instead!");
             core = new Economy_Vault();
-        } catch (final InstantiationException e) {
-            // Should not be thrown
-            e.printStackTrace();
-            System.out.println("Invalid Economy Core! " + econ);
-            return false;
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             // Should not be thrown
             e.printStackTrace();
             System.out.println("Invalid Economy Core! " + econ);

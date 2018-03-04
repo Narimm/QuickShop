@@ -38,12 +38,9 @@ public class BlockListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
 
         final BlockState bs = e.getBlock().getState();
-        if (bs instanceof DoubleChest == false) {
+        if (!(bs instanceof DoubleChest)) {
             return;
         }
         final Block b = e.getBlock();
@@ -100,11 +97,6 @@ public class BlockListener implements Listener {
                 p.sendMessage(MsgUtil.getMessage("no-creative-break"));
                 return;
             }
-
-            if (e.isCancelled()) {
-                return;
-            }
-
             e.setCancelled(true); // Cancel the event so that the sign does not
                                   // drop.. TODO: Find a better way.
             b.setType(Material.AIR);

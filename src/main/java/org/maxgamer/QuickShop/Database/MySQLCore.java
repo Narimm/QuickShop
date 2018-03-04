@@ -66,7 +66,7 @@ public class MySQLCore implements DatabaseCore {
             while (con == null) {
                 try {
                     Thread.sleep(15);
-                } catch (final InterruptedException e) {}
+                } catch (final InterruptedException ignored) {}
                 // Try again
                 getConnection();
             }

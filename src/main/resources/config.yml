@@ -25,7 +25,11 @@ database:
     database: quickshop
     user: root
     password: passwd
-    
+
+# change to false to disable metrics...please think before you do.
+metrics:
+    enabled: true
+
 #Limits the number of shops a person can create and own at a single time.
 limits:
     #Disable these if you're not using them! If this is false, the rest of this section is ignored

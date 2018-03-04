@@ -28,14 +28,14 @@ public class DatabaseHelper {
                     "ALTER TABLE shops MODIFY COLUMN price double(32,2) NOT NULL AFTER ownerId");
             ps.execute();
             ps.close();
-        } catch (final SQLException e) {}
+        } catch (final SQLException ignored) {}
         try {
             // V3.4.3
             ps = db.getConnection().prepareStatement(
                     "ALTER TABLE messages MODIFY COLUMN time BIGINT(32) NOT NULL AFTER message");
             ps.execute();
             ps.close();
-        } catch (final SQLException e) {}
+        } catch (final SQLException ignored) {}
 
     }
 
