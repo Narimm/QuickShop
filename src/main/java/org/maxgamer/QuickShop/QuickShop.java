@@ -372,10 +372,6 @@ public class QuickShop extends JavaPlugin {
         MsgUtil.loadCfgMessages();
     }
 
-    public void loadConfig(){
-
-    }
-
 
     /**
      * Tries to load the economy and its core. If this fails, it will try to use

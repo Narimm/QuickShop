@@ -1,2 +1,6 @@
 /.settings
 /target
+.idea/
+dependency-reduced-pom.xml
+quickshop.iml
+!/src/main/java/org/maxgamer/QuickShop/Shop/Shop.java
