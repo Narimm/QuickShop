@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.addstar</groupId>
 	<artifactId>quickshop</artifactId>
-	<version>4.8.0</version>
+	<version>4.8.1-SNAPSHOT</version>
 	<name>QuickShop</name>
 	<properties>
 		<build.number />
@@ -14,7 +14,7 @@
 		<connection>scm:git:git@github.com:AddstarMC/Quickshop.git</connection>
 		<developerConnection>scm:git:git@github.com:AddstarMC/Quickshop.git</developerConnection>
 		<url>https://github.com/AddstarMC/Quickshop</url>
-	  <tag>quickshop-4.8.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<distributionManagement>
 		<repository>
