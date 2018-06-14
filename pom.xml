@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.addstar</groupId>
 	<artifactId>quickshop</artifactId>
-	<version>4.8.1-SNAPSHOT</version>
+	<version>4.8.2-ALPHA</version>
 	<name>QuickShop</name>
 	<properties>
 		<build.number />
@@ -83,9 +83,9 @@
 	<dependencies>
 		<!-- Spigot -->
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigot.version}</version>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>18w15a-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -96,6 +96,12 @@
 	      <version>1.6</version>
 	      <optional>true</optional>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+			</exclusions>
 	    </dependency>
 	    
 	    <!-- Monolith -->

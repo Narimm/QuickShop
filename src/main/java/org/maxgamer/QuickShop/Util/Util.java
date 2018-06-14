@@ -21,11 +21,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.map.MapView;
+import org.bukkit.material.Diode;
 import org.bukkit.material.Sign;
 
 import org.bukkit.potion.PotionEffect;
@@ -39,7 +37,6 @@ public class Util {
     private static HashSet<Material> tools       = new HashSet<>();
     private static HashSet<Material> blacklist   = new HashSet<>();
     private static HashSet<Material> shoppables  = new HashSet<>();
-    private static HashSet<Material> transparent = new HashSet<>();
 
     private static QuickShop         plugin;
 
@@ -47,8 +44,8 @@ public class Util {
 
     static {
         Util.plugin = QuickShop.instance;
-
-        for (final String s: Util.plugin.getConfig().getStringList("shop-blocks")) {
+    
+        for (final String s : Util.plugin.getConfig().getStringList("shop-blocks")) {
             Material mat = Material.getMaterial(s.toUpperCase());
             if (mat == null) {
                 Util.plugin.getLogger().info("Invalid shop-block: " + s);
@@ -56,34 +53,33 @@ public class Util {
                 Util.shoppables.add(mat);
             }
         }
-
+    
         Util.tools.add(Material.BOW);
         Util.tools.add(Material.SHEARS);
         Util.tools.add(Material.FISHING_ROD);
         Util.tools.add(Material.FLINT_AND_STEEL);
-
+    
         Util.tools.add(Material.CHAINMAIL_BOOTS);
         Util.tools.add(Material.CHAINMAIL_CHESTPLATE);
         Util.tools.add(Material.CHAINMAIL_HELMET);
         Util.tools.add(Material.CHAINMAIL_LEGGINGS);
-
-        Util.tools.add(Material.WOOD_AXE);
-        Util.tools.add(Material.WOOD_HOE);
-        Util.tools.add(Material.WOOD_PICKAXE);
-        Util.tools.add(Material.WOOD_SPADE);
-        Util.tools.add(Material.WOOD_SWORD);
-
+    
+        Util.tools.add(Material.WOODEN_AXE);
+        Util.tools.add(Material.WOODEN_PICKAXE);
+        Util.tools.add(Material.WOODEN_SHOVEL);
+        Util.tools.add(Material.WOODEN_SWORD);
+    
         Util.tools.add(Material.LEATHER_BOOTS);
         Util.tools.add(Material.LEATHER_CHESTPLATE);
         Util.tools.add(Material.LEATHER_HELMET);
         Util.tools.add(Material.LEATHER_LEGGINGS);
-
+    
         Util.tools.add(Material.DIAMOND_AXE);
         Util.tools.add(Material.DIAMOND_HOE);
         Util.tools.add(Material.DIAMOND_PICKAXE);
-        Util.tools.add(Material.DIAMOND_SPADE);
+        Util.tools.add(Material.DIAMOND_SHOVEL);
         Util.tools.add(Material.DIAMOND_SWORD);
-
+    
         Util.tools.add(Material.DIAMOND_BOOTS);
         Util.tools.add(Material.DIAMOND_CHESTPLATE);
         Util.tools.add(Material.DIAMOND_HELMET);
@@ -91,165 +87,51 @@ public class Util {
         Util.tools.add(Material.STONE_AXE);
         Util.tools.add(Material.STONE_HOE);
         Util.tools.add(Material.STONE_PICKAXE);
-        Util.tools.add(Material.STONE_SPADE);
+        Util.tools.add(Material.STONE_SHOVEL);
         Util.tools.add(Material.STONE_SWORD);
-
-        Util.tools.add(Material.GOLD_AXE);
-        Util.tools.add(Material.GOLD_HOE);
-        Util.tools.add(Material.GOLD_PICKAXE);
-        Util.tools.add(Material.GOLD_SPADE);
-        Util.tools.add(Material.GOLD_SWORD);
-
-        Util.tools.add(Material.GOLD_BOOTS);
-        Util.tools.add(Material.GOLD_CHESTPLATE);
-        Util.tools.add(Material.GOLD_HELMET);
-        Util.tools.add(Material.GOLD_LEGGINGS);
+    
+        Util.tools.add(Material.GOLDEN_AXE);
+        Util.tools.add(Material.GOLDEN_HOE);
+        Util.tools.add(Material.GOLDEN_PICKAXE);
+        Util.tools.add(Material.GOLDEN_SHOVEL);
+        Util.tools.add(Material.GOLDEN_SWORD);
+    
+        Util.tools.add(Material.GOLDEN_BOOTS);
+        Util.tools.add(Material.GOLDEN_CHESTPLATE);
+        Util.tools.add(Material.GOLDEN_HELMET);
+        Util.tools.add(Material.GOLDEN_LEGGINGS);
         Util.tools.add(Material.IRON_AXE);
         Util.tools.add(Material.IRON_HOE);
         Util.tools.add(Material.IRON_PICKAXE);
-        Util.tools.add(Material.IRON_SPADE);
+        Util.tools.add(Material.IRON_SHOVEL);
         Util.tools.add(Material.IRON_SWORD);
-
+    
         Util.tools.add(Material.IRON_BOOTS);
         Util.tools.add(Material.IRON_CHESTPLATE);
         Util.tools.add(Material.IRON_HELMET);
         Util.tools.add(Material.IRON_LEGGINGS);
-
+    
         final List<String> configBlacklist = Util.plugin.getConfig().getStringList("blacklist");
-
-        for (final String s: configBlacklist) {
+    
+        for (final String s : configBlacklist) {
             Material mat = Material.getMaterial(s.toUpperCase());
-            if (mat == null) {
-                mat = Material.getMaterial(Integer.parseInt(s));
-                if(mat !=null){
-                    plugin.getLogger().warning("USING ID's in the BlackList is no longer supported and will be " +
-                            "removed.");
-                }else{
-                    Util.plugin.getLogger().info(s + " is not a valid material.  Check your spelling");
-                    continue;
-                }
-            }
             Util.blacklist.add(mat);
         }
-
-        Util.transparent.clear();
-        // ToDo: add extras to config file
-        Util.addTransparentBlock(Material.AIR);
-        /* Misc */
-        Util.addTransparentBlock(Material.CAKE_BLOCK);
-
-        /* Redstone Material */
-        Util.addTransparentBlock(Material.REDSTONE_WIRE);
-
-        /* Redstone Torches */
-        Util.addTransparentBlock(Material.REDSTONE_TORCH_OFF);
-        Util.addTransparentBlock(Material.REDSTONE_TORCH_ON);
-
-        /* Diodes (Repeaters) */
-        Util.addTransparentBlock(Material.DIODE_BLOCK_OFF);
-        Util.addTransparentBlock(Material.DIODE_BLOCK_ON);
-
-        /* Power Sources */
-        Util.addTransparentBlock(Material.DETECTOR_RAIL);
-        Util.addTransparentBlock(Material.LEVER);
-        Util.addTransparentBlock(Material.STONE_BUTTON);
-        Util.addTransparentBlock(Material.WOOD_BUTTON);
-        Util.addTransparentBlock(Material.STONE_PLATE);
-        Util.addTransparentBlock(Material.WOOD_PLATE);
-
-        /* Nature Material */
-        Util.addTransparentBlock(Material.RED_MUSHROOM);
-        Util.addTransparentBlock(Material.BROWN_MUSHROOM);
-
-        Util.addTransparentBlock(Material.RED_ROSE);
-        Util.addTransparentBlock(Material.YELLOW_FLOWER);
-
-        Util.addTransparentBlock(Material.FLOWER_POT);
-
-        /* Greens */
-        Util.addTransparentBlock(Material.LONG_GRASS);
-        Util.addTransparentBlock(Material.VINE);
-        Util.addTransparentBlock(Material.WATER_LILY);
-
-        /* Seedy things */
-        Util.addTransparentBlock(Material.MELON_STEM);
-        Util.addTransparentBlock(Material.PUMPKIN_STEM);
-        Util.addTransparentBlock(Material.CROPS);
-        Util.addTransparentBlock(Material.NETHER_WARTS);
-
-        /* Semi-nature */
-        Util.addTransparentBlock(Material.SNOW);
-        Util.addTransparentBlock(Material.FIRE);
-        Util.addTransparentBlock(Material.WEB);
-        Util.addTransparentBlock(Material.TRIPWIRE);
-        Util.addTransparentBlock(Material.TRIPWIRE_HOOK);
-
-        /* Stairs */
-        Util.addTransparentBlock(Material.COBBLESTONE_STAIRS);
-        Util.addTransparentBlock(Material.BRICK_STAIRS);
-        Util.addTransparentBlock(Material.SANDSTONE_STAIRS);
-        Util.addTransparentBlock(Material.NETHER_BRICK_STAIRS);
-        Util.addTransparentBlock(Material.SMOOTH_STAIRS);
-
-        /* Wood Stairs */
-        Util.addTransparentBlock(Material.BIRCH_WOOD_STAIRS);
-        Util.addTransparentBlock(Material.WOOD_STAIRS);
-        Util.addTransparentBlock(Material.JUNGLE_WOOD_STAIRS);
-        Util.addTransparentBlock(Material.SPRUCE_WOOD_STAIRS);
-
-        /* Lava & Water */
-        Util.addTransparentBlock(Material.LAVA);
-        Util.addTransparentBlock(Material.STATIONARY_LAVA);
-        Util.addTransparentBlock(Material.WATER);
-        Util.addTransparentBlock(Material.STATIONARY_WATER);
-
-        /* Saplings and bushes */
-        Util.addTransparentBlock(Material.SAPLING);
-        Util.addTransparentBlock(Material.DEAD_BUSH);
-
-        /* Construction Material */
-        /* Fences */
-        Util.addTransparentBlock(Material.FENCE);
-        Util.addTransparentBlock(Material.FENCE_GATE);
-        Util.addTransparentBlock(Material.IRON_FENCE);
-        Util.addTransparentBlock(Material.NETHER_FENCE);
-
-        /* Ladders, Signs */
-        Util.addTransparentBlock(Material.LADDER);
-        Util.addTransparentBlock(Material.SIGN_POST);
-        Util.addTransparentBlock(Material.WALL_SIGN);
-
-        /* Bed */
-        Util.addTransparentBlock(Material.BED_BLOCK);
-
-        /* Pistons */
-        Util.addTransparentBlock(Material.PISTON_EXTENSION);
-        Util.addTransparentBlock(Material.PISTON_MOVING_PIECE);
-        Util.addTransparentBlock(Material.RAILS);
-
-        /* Torch & Trapdoor */
-        Util.addTransparentBlock(Material.TORCH);
-        Util.addTransparentBlock(Material.TRAP_DOOR);
-
-        /* New */
-        Util.addTransparentBlock(Material.BREWING_STAND);
-        Util.addTransparentBlock(Material.WOODEN_DOOR);
-        Util.addTransparentBlock(Material.WOOD_STEP);
+    
     }
-
+    
+    /**
+     *
+     * @param m
+     * @return
+     * @Deprecated use Material.isTransparent() bukkit function
+     */
+    
+    @Deprecated
     public static boolean isTransparent(Material m) {
-        final boolean trans = Util.transparent.contains(m);
-        return trans;
+        return m.isTransparent();
     }
-
-    public static void addTransparentBlock(Material m) {
-        if (!Util.transparent.add(m)) {
-            System.out.println("Already added as transparent: " + m.toString());
-        }
-        if (!m.isBlock()) {
-            System.out.println(m + " is not a block!");
-        }
-    }
+    
 
     public static void parseColours(YamlConfiguration config) {
         final Set<String> keys = config.getKeys(true);
@@ -460,29 +342,29 @@ public class Util {
     
     private static String getRecordName(Material record) {
         switch(record) {
-        case GOLD_RECORD:
+            case MUSIC_DISC_13:
             return "Record - 13";
-        case GREEN_RECORD:
+            case MUSIC_DISC_CAT:
             return "Record - cat";
-        case RECORD_3:
+            case MUSIC_DISC_BLOCKS:
             return "Record - blocks";
-        case RECORD_4:
+            case MUSIC_DISC_CHIRP:
             return "Record - chirp";
-        case RECORD_5:
+            case MUSIC_DISC_FAR:
             return "Record - far";
-        case RECORD_6:
+            case MUSIC_DISC_MALL:
             return "Record - mall";
-        case RECORD_7:
+            case MUSIC_DISC_MELLOHI:
             return "Record - mellohi";
-        case RECORD_8:
+            case MUSIC_DISC_STAL:
             return "Record - stal";
-        case RECORD_9:
+            case MUSIC_DISC_STRAD:
             return "Record - strad";
-        case RECORD_10:
+            case MUSIC_DISC_WARD:
             return "Record - ward";
-        case RECORD_11:
+            case MUSIC_DISC_11:
             return "Record - 11";
-        case RECORD_12:
+            case MUSIC_DISC_WAIT:
             return "Record - wait";
         default:
             throw new AssertionError("Unknown record " + record);

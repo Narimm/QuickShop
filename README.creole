@@ -74,7 +74,7 @@ play.maxgamer.org:25571 and /warp market!
 * **quickshop.create.sell** - Required to make a QuickShop (At all)
 * **quickshop.create.buy** - Required to use /qs buy (Change the shop type from Sell -> Buy)
 * **quickshop.create.changeprice** - Required to use /qs price (Ability to change the price of a shop without destroying it.  This **may allow** for some scammers to quickly change the price while someone is buying.
-* **quickshop.bypass.ItemID** - Required to sell blacklisted items (E.g. bedrock)
+* **quickshop.bypass.MATERIAL_NAME** - Required to sell blacklisted items (E.g. bedrock)
 
 == Admin Nodes ==
 * **quickshop.unlimited** - Required to use /quickshop unlimited
