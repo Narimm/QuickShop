@@ -21,7 +21,7 @@ public class DatabaseHelper {
      * @param db  the database
      */
     private static void checkColumns(Database db) {
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         try {
             // V3.4.2
             ps = db.getConnection().prepareStatement(

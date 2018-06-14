@@ -9,21 +9,17 @@ import java.util.Properties;
 
 public class MySQLCore implements DatabaseCore {
     private final String                 url;
-    /** The connection properties... user, pass, autoReconnect.. */
-    private final Properties             info;
-
     private static final int             MAX_CONNECTIONS = 8;
+    private Properties info;
     private static ArrayList<Connection> pool            = new ArrayList<>();
 
-    public MySQLCore(String host, String user, String pass, String database, String port) {
-        info = new Properties();
+    public MySQLCore(String host, String database, String port, Properties info) {
         info.put("autoReconnect", "true");
-        info.put("user", user);
-        info.put("password", pass);
         info.put("useUnicode", "true");
         info.put("characterEncoding", "utf8");
+        info.put("useSSL",false);
+        this.info = info;
         url = "jdbc:mysql://" + host + ":" + port + "/" + database;
-
         for (int i = 0; i < MySQLCore.MAX_CONNECTIONS; i++) {
             MySQLCore.pool.add(null);
         }
@@ -62,20 +58,19 @@ public class MySQLCore implements DatabaseCore {
     @Override
     public void queue(BufferStatement bs) {
         try {
-            final Connection con = getConnection();
+            Connection con = getConnection();
             while (con == null) {
                 try {
                     Thread.sleep(15);
                 } catch (final InterruptedException ignored) {}
                 // Try again
-                getConnection();
+                con = getConnection();
             }
             final PreparedStatement ps = bs.prepareStatement(con);
             ps.execute();
             ps.close();
         } catch (final SQLException e) {
             e.printStackTrace();
-            return;
         }
     }
 

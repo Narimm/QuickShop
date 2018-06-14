@@ -8,7 +8,6 @@ import org.maxgamer.QuickShop.Shop.ShopPurchaseEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static org.maxgamer.QuickShop.Metrics.ShopListener.ShopActions.PURCHASES;
 import static org.maxgamer.QuickShop.Metrics.ShopListener.ShopActions.SALES;
@@ -51,7 +50,7 @@ public  Metrics.MultiLineChart chart;
         private final String text;
 
         /**
-         * @param text
+         * @param text Action Text
          */
         ShopActions(final String text) {
             this.text = text;

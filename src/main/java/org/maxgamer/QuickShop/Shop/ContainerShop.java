@@ -61,6 +61,7 @@ public class ContainerShop implements Shop {
         unlimited = s.unlimited;
         ownerId = s.ownerId;
         price = s.price;
+        closed = s.closed;
     }
 
     /**
@@ -516,7 +517,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void setSignText() {
-        if (Util.isLoaded(getLocation()) == false) {
+        if (!Util.isLoaded(getLocation())) {
             return;
         }
         String owner = getOwnerLine();
@@ -573,7 +574,7 @@ public class ContainerShop implements Shop {
      */
     @Override
     public void setSignText(String[] lines) {
-        if (Util.isLoaded(getLocation()) == false) {
+        if (!Util.isLoaded(getLocation())) {
             return;
         }
 

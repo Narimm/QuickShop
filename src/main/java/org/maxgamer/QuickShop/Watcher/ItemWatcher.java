@@ -45,7 +45,6 @@ public class ItemWatcher implements Runnable {
                     // Validate the shop.
                     if (!shop.isValid()) {
                         toRemove.add(shop);
-                        continue;
                     }
                 }
             }

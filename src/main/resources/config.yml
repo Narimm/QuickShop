@@ -17,7 +17,7 @@ economy: Vault
 
 #For item-item based economies that don't use virtual coins.
 whole-number-prices-only: false
-
+#JBDC Connection Properties can be added to the properties entry as a `Key: value` pair
 database:
     mysql: false
     host: localhost
@@ -25,6 +25,8 @@ database:
     database: quickshop
     user: root
     password: passwd
+    properties:
+      useSSL: false
 
 # change to false to disable metrics...please think before you do.
 metrics:

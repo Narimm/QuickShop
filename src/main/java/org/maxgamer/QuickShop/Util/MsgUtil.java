@@ -96,11 +96,7 @@ public class MsgUtil {
     @SuppressWarnings("deprecation")
     public static void send(OfflinePlayer player, String message) {
         if (!player.isOnline()) {
-            LinkedList<String> msgs = MsgUtil.player_messages.get(player);
-            if (msgs == null) {
-                msgs = new LinkedList<>();
-                MsgUtil.player_messages.put(player.getUniqueId(), msgs);
-            }
+            LinkedList<String> msgs = MsgUtil.player_messages.computeIfAbsent(player.getUniqueId(), k -> new LinkedList<>());
             msgs.add(message);
 
             final String q = "INSERT INTO messages (owner, message, time) VALUES (?, ?, ?)";
@@ -178,7 +174,7 @@ public class MsgUtil {
                     + MsgUtil.getMessage("menu.damage-percent-remaining", Util.getToolPercentage(items)));
         }
 
-        Map<String, Object> data = Util.getData(items);
+        Map<String, Object> data = Util.getCustomData(items);
         for (Entry<String, Object> entry : data.entrySet()) {
             p.sendMessage(ChatColor.DARK_PURPLE + "| "
                     + MsgUtil.getMessage("menu.item-data", entry.getKey(), String.valueOf(entry.getValue())));

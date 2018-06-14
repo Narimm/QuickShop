@@ -78,7 +78,7 @@ public class SQLiteCore implements DatabaseCore {
 
     @Override
     public void flush() {
-        while (queue.isEmpty() == false) {
+        while (!queue.isEmpty()) {
             BufferStatement bs;
             synchronized (queue) {
                 bs = queue.removeFirst();
@@ -102,16 +102,13 @@ public class SQLiteCore implements DatabaseCore {
     }
 
     private void startWatcher() {
-        watcher = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(30000);
-                } catch (final InterruptedException ignored) {}
+        watcher = new Thread(() -> {
+            try {
+                Thread.sleep(30000);
+            } catch (final InterruptedException ignored) {}
 
-                flush();
-            }
-        };
+            flush();
+        });
         watcher.start();
     }
 }

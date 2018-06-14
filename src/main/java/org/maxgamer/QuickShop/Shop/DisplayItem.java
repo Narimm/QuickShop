@@ -1,6 +1,5 @@
 package org.maxgamer.QuickShop.Shop;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 

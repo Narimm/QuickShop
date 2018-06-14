@@ -6,12 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -228,8 +224,16 @@ public class QuickShop extends JavaPlugin {
                 final String host = dbCfg.getString("host");
                 final String port = dbCfg.getString("port");
                 final String database = dbCfg.getString("database");
-
-                final DatabaseCore dbCore = new MySQLCore(host, user, pass, database, port);
+                Properties props =  new Properties();
+                props.put("user",user);
+                props.put("pass",pass);
+                ConfigurationSection dbprops = dbCfg.getConfigurationSection("properties");
+                if(dbprops != null) {
+                    for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
+                        props.put(entry.getKey(), entry.getValue());
+                    }
+                }
+                final DatabaseCore dbCore = new MySQLCore(host, database, port, props);
                 this.database = new Database(dbCore);
             } else {
                 // SQLite database - Doing this handles file creation
@@ -296,7 +300,7 @@ public class QuickShop extends JavaPlugin {
                     final double price = rs.getDouble("price");
                     final Location loc = new Location(world, x, y, z);
                     /* Skip invalid shops, if we know of any */
-                    if (world != null && loc.getBlock().getState() instanceof InventoryHolder == false) {
+                    if (world != null && !(loc.getBlock().getState() instanceof InventoryHolder)) {
                         getLogger().info(
                                 "Shop is not an InventoryHolder in " + rs.getString("world") + " at: " + x + ", " + y
                                         + ", " + z + ".  Deleting.");
@@ -390,7 +394,7 @@ public class QuickShop extends JavaPlugin {
         econ = econ.substring(0, 1).toUpperCase() + econ.substring(1).toLowerCase();
 
         // The core to use
-        EconomyCore core = null;
+        EconomyCore core;
         try {
             getLogger().info("Hooking " + econ);
             // Throws ClassNotFoundException if they gave us the wrong economy

@@ -4,7 +4,7 @@ public class ShopChunk {
     private final String world;
     private final int    x;
     private final int    z;
-    private int          hash = 0;
+    private int          hash;
 
     public ShopChunk(String world, int x, int z) {
         this.world = world;

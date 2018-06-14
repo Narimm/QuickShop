@@ -111,8 +111,7 @@ public class PlayerListener implements Listener {
             final HashMap<String, Info> actions = plugin.getShopManager().getActions();
             final Info info = new Info(shop.getLocation(), ShopAction.BUY, null, null, shop);
             actions.put(p.getName(), info);
-
-            return;
+    
         }
         // Handles creating shops
         else if (shop == null && item != null && item.getType() != Material.AIR
@@ -176,7 +175,6 @@ public class PlayerListener implements Listener {
                     p.sendMessage(MsgUtil.getMessage("shop-purchase-cancelled"));
                 }
                 plugin.getShopManager().getActions().remove(p.getName());
-                return;
             }
         }
     }

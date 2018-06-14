@@ -3,6 +3,8 @@ package org.maxgamer.QuickShop.Command;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,10 +51,8 @@ public class QS implements CommandExecutor {
                 }
             }
             sender.sendMessage(MsgUtil.getMessage("not-looking-at-shop"));
-            return;
         } else {
             sender.sendMessage(MsgUtil.getMessage("no-permission"));
-            return;
         }
     }
 
@@ -101,8 +101,16 @@ public class QS implements CommandExecutor {
             final String user = cfg.getString("user");
             final String pass = cfg.getString("password");
             final String name = cfg.getString("database");
-
-            final MySQLCore core = new MySQLCore(host, user, pass, name, port);
+            Properties props =  new Properties();
+            props.put("user",user);
+            props.put("pass",pass);
+            ConfigurationSection dbprops = cfg.getConfigurationSection("properties");
+            if(dbprops != null) {
+                for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
+                    props.put(entry.getKey(), entry.getValue());
+                }
+            }
+            final MySQLCore core = new MySQLCore(host, name, port,props);
             Database target;
 
             try {
@@ -203,10 +211,8 @@ public class QS implements CommandExecutor {
                 }
             }
             sender.sendMessage(MsgUtil.getMessage("not-looking-at-shop"));
-            return;
         } else {
             sender.sendMessage(MsgUtil.getMessage("no-permission"));
-            return;
         }
     }
 
@@ -309,7 +315,6 @@ public class QS implements CommandExecutor {
             return;
         }
         sender.sendMessage(MsgUtil.getMessage("no-permission"));
-        return;
     }
 
     private void setSell(CommandSender sender) {

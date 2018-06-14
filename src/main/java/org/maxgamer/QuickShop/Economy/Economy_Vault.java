@@ -52,7 +52,7 @@ public class Economy_Vault implements EconomyCore {
                                                                            // from
                                                                            // their
                                                                            // account.
-                if (vault.depositPlayer(to, amount).transactionSuccess() == false) { // Successfully
+                if (!vault.depositPlayer(to, amount).transactionSuccess()) { // Successfully
                                                                                      // took
                                                                                      // money
                                                                                      // from

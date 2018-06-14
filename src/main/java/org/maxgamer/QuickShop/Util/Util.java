@@ -23,9 +23,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.map.MapView;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sign;
 
 import org.bukkit.potion.PotionEffect;
@@ -121,8 +121,11 @@ public class Util {
             Material mat = Material.getMaterial(s.toUpperCase());
             if (mat == null) {
                 mat = Material.getMaterial(Integer.parseInt(s));
-                if (mat == null) {
-                    Util.plugin.getLogger().info(s + " is not a valid material.  Check your spelling or ID");
+                if(mat !=null){
+                    plugin.getLogger().warning("USING ID's in the BlackList is no longer supported and will be " +
+                            "removed.");
+                }else{
+                    Util.plugin.getLogger().info(s + " is not a valid material.  Check your spelling");
                     continue;
                 }
             }
@@ -240,7 +243,7 @@ public class Util {
     }
 
     public static void addTransparentBlock(Material m) {
-        if (Util.transparent.add(m) == false) {
+        if (!Util.transparent.add(m)) {
             System.out.println("Already added as transparent: " + m.toString());
         }
         if (!m.isBlock()) {
@@ -270,7 +273,7 @@ public class Util {
      */
     public static boolean canBeShop(Block b) {
         final BlockState bs = b.getState();
-        return bs instanceof InventoryHolder != false && Util.shoppables.contains(bs.getType());
+        return bs instanceof InventoryHolder && Util.shoppables.contains(bs.getType());
     }
 
     /**
@@ -297,7 +300,7 @@ public class Util {
      * @return the block which is also a chest and connected to b.
      */
     public static Block getSecondHalf(Block b) {
-        if (b.getType().toString().contains("CHEST") == false) {
+        if (!b.getType().toString().contains("CHEST")) {
             return null;
         }
 
@@ -319,39 +322,11 @@ public class Util {
     /**
      * Converts a string into an item from the database.
      * 
-     * @param itemString
+     * @param iStack
      *            The database string. Is the result of makeString(ItemStack
      *            item).
      * @return A new itemstack, with the properties given in the string
      */
-    public static ItemStack makeItem(String itemString) {
-        final String[] itemInfo = itemString.split(":");
-
-        final ItemStack item = new ItemStack(Material.getMaterial(itemInfo[0]));
-        final MaterialData data = new MaterialData(Integer.parseInt(itemInfo[1]));
-        item.setData(data);
-        item.setDurability(Short.parseShort(itemInfo[2]));
-        item.setAmount(Integer.parseInt(itemInfo[3]));
-
-        for (int i = 4; i < itemInfo.length; i = i + 2) {
-            int level = Integer.parseInt(itemInfo[i + 1]);
-
-            final Enchantment ench = Enchantment.getByName(itemInfo[i]);
-            if (ench == null) {
-                continue; // Invalid
-            }
-            if (ench.canEnchantItem(item)) {
-                if (level <= 0) {
-                    continue;
-                }
-                level = Math.min(ench.getMaxLevel(), level);
-
-                item.addEnchantment(ench, level);
-            }
-
-        }
-        return item;
-    }
 
     public static String serialize(ItemStack iStack) {
         final YamlConfiguration cfg = new YamlConfiguration();
@@ -392,15 +367,18 @@ public class Util {
         return StringTranslator.getName(i);
     }
     
-    public static Map<String, Object> getData(ItemStack i) {
+    public static Map<String, Object> getCustomData(ItemStack i) {
         
         Map<String, Object> result = Maps.newHashMap();
         switch (i.getType()) {
         case MAP: {
-            MapView map = Bukkit.getMap(i.getDurability());
-            result.put("Location", String.format("%d,%d in %s", map.getCenterX(), map.getCenterZ(), map.getWorld().getName()));
-            result.put("Scale", map.getScale());
-            
+            ItemMeta meta = i.getItemMeta();
+            if(meta instanceof MapMeta) {
+                MapMeta mmeta = (MapMeta) meta;
+                result.put("Location", mmeta.getLocationName());
+                MapView map = Bukkit.getMap(i.getDurability());
+                result.put("Scale", map.getScale());
+            }
             break;
         }
         default:
@@ -548,7 +526,7 @@ public class Util {
             prefix += "Amplified Effect ";
         }
         prefix +=  meta.getDisplayName();
-        boolean noEffects = false;
+        boolean noEffects;
         List<PotionEffect> potionEffects = meta.getCustomEffects();
         noEffects = potionEffects.isEmpty();
         if (!noEffects)  {
@@ -607,7 +585,7 @@ public class Util {
             if (book1 != book2) {
                 return false;// One has enchantment meta, the other does not.
             }
-            if (book1 == true) { // They are the same here (both true or both
+            if (book1) { // They are the same here (both true or both
                                  // false). So if one is true, the other is
                                  // true.
                 final Map<Enchantment, Integer> ench1 = ((EnchantmentStorageMeta) stack1.getItemMeta())

@@ -312,7 +312,7 @@ public class ShopManager {
                         return;
                     }
 
-                    if (Util.canBeShop(info.getLocation().getBlock()) == false) {
+                    if (!Util.canBeShop(info.getLocation().getBlock())) {
                         p.sendMessage(MsgUtil.getMessage("chest-was-removed"));
                         return;
                     }
@@ -424,29 +424,26 @@ public class ShopManager {
                          */
                         // }
                     }
+    
+                    final ContainerShop cs = (ContainerShop) shop;
+                    if (cs.isDoubleShop()) {
+                        final Shop nextTo = cs.getAttachedShop();
 
-                    if (shop instanceof ContainerShop) {
-                        final ContainerShop cs = (ContainerShop) shop;
-                        if (cs.isDoubleShop()) {
-                            final Shop nextTo = cs.getAttachedShop();
-
-                            if (nextTo.getPrice() > shop.getPrice()) {
-                                // The one next to it must always be a
-                                // buying shop.
-                                p.sendMessage(MsgUtil.getMessage("buying-more-than-selling"));
-                            }
+                        if (nextTo.getPrice() > shop.getPrice()) {
+                            // The one next to it must always be a
+                            // buying shop.
+                            p.sendMessage(MsgUtil.getMessage("buying-more-than-selling"));
                         }
                     }
                 }
                 /* They didn't enter a number. */
                 catch (final NumberFormatException ex) {
                     p.sendMessage(MsgUtil.getMessage("shop-creation-cancelled"));
-                    return;
                 }
             }
             /* Purchase Handling */
             else if (info.getAction() == ShopAction.BUY) {
-                int amount = 0;
+                int amount;
                 try {
                     amount = Integer.parseInt(message);
                 } catch (final NumberFormatException e) {
@@ -458,7 +455,7 @@ public class ShopManager {
                 final Shop shop = plugin.getShopManager().getShop(info.getLocation());
 
                 // It's not valid anymore
-                if (shop == null || Util.canBeShop(info.getLocation().getBlock()) == false) {
+                if (shop == null || !Util.canBeShop(info.getLocation().getBlock())) {
                     p.sendMessage(MsgUtil.getMessage("chest-was-removed"));
                     return;
                 }
@@ -479,16 +476,8 @@ public class ShopManager {
                                 shop.getDataName()));
                         return;
                     }
-                    if (amount == 0) {
-                        // Dumb.
-                        MsgUtil.sendPurchaseSuccess(p, shop, amount);
-                        return;
-                    } else if (amount < 0) {
-                        // & Dumber
-                        p.sendMessage(MsgUtil.getMessage("negative-amount"));
-                        return;
-                    }
-
+                    if (validatePurchase(p, amount, shop)) return;
+    
                     final int pSpace = Util.countSpace(p.getInventory(), shop.getItem());
                     if (amount > pSpace) {
                         p.sendMessage(MsgUtil.getMessage("not-enough-space", "" + pSpace));
@@ -580,17 +569,9 @@ public class ShopManager {
                                 shop.getDataName()));
                         return;
                     }
-
-                    if (amount == 0) {
-                        // Dumb.
-                        MsgUtil.sendPurchaseSuccess(p, shop, amount);
-                        return;
-                    } else if (amount < 0) {
-                        // & Dumber
-                        p.sendMessage(MsgUtil.getMessage("negative-amount"));
-                        return;
-                    }
-
+    
+                    if (validatePurchase(p, amount, shop)) return;
+    
                     // Money handling
                     if (!p.equals(shop.getOwner().getPlayer())) {
                         // Don't tax them if they're purchasing from
@@ -646,11 +627,23 @@ public class ShopManager {
             }
             /* If it was already cancelled (from destroyed) */
             else {
-                return; // It was cancelled, go away.
             }
         });
     }
-
+    
+    private boolean validatePurchase(Player p, int amount, Shop shop) {
+        if (amount == 0) {
+            // Dumb.
+            MsgUtil.sendPurchaseSuccess(p, shop, amount);
+            return true;
+        } else if (amount < 0) {
+            // & Dumber
+            p.sendMessage(MsgUtil.getMessage("negative-amount"));
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Returns a new shop iterator object, allowing iteration over shops
      * easily, instead of sorting through a 3D hashmap.

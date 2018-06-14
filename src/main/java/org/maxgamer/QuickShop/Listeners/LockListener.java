@@ -58,7 +58,6 @@ public class LockListener implements Listener {
             }
             p.sendMessage(MsgUtil.getMessage("that-is-locked"));
             e.setCancelled(true);
-            return;
         }
     }
 
@@ -77,7 +76,7 @@ public class LockListener implements Listener {
             return; // Your server doesn't have hoppers
         }
         Block c = e.getBlockAgainst();
-        if (Util.canBeShop(c) == false) {
+        if (!Util.canBeShop(c)) {
             return;
         }
         final Player p = e.getPlayer();
@@ -103,7 +102,6 @@ public class LockListener implements Listener {
             }
             p.sendMessage(MsgUtil.getMessage("that-is-locked"));
             e.setCancelled(true);
-            return;
         }
     }
 
@@ -127,7 +125,6 @@ public class LockListener implements Listener {
             if (!p.equals(shop.getOwner().getPlayer()) && !p.hasPermission("quickshop.other.destroy")) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-permission"));
-                return;
             }
         } else if (b.getType() == Material.WALL_SIGN) {
             b = Util.getAttached(b);
@@ -144,7 +141,6 @@ public class LockListener implements Listener {
             if (!p.equals(shop.getOwner().getPlayer()) && !p.hasPermission("quickshop.other.destroy")) {
                 e.setCancelled(true);
                 p.sendMessage(MsgUtil.getMessage("no-permission"));
-                return;
             }
         }
     }
