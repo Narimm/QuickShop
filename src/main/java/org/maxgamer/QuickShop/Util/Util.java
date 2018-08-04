@@ -121,10 +121,11 @@ public class Util {
     }
     
     /**
+     * Check if a Material is Transparent to light
+     * @deprecated  use Material#isTransparent() bukkit function
+     * @param m The material to check
+     * @return boolean
      *
-     * @param m
-     * @return
-     * @Deprecated use Material.isTransparent() bukkit function
      */
     
     @Deprecated
