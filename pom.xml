@@ -8,7 +8,7 @@
 		<build.number />
 		<plugin.version>${project.version}-${build.number}</plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
+		<spigot.version>1.13-R0.1-SNAPSHOT</spigot.version>
 	</properties>
 	<scm>
 		<connection>scm:git:git@github.com:AddstarMC/Quickshop.git</connection>
@@ -108,7 +108,7 @@
 	    <dependency>
 			<groupId>au.com.addstar</groupId>
 			<artifactId>Monolith</artifactId>
-			<version>1.4.8-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.spigotmc</groupId>
