@@ -100,7 +100,7 @@ public class DisplayItem {
             if (eLoc.equals(displayLoc) || eLoc.equals(shop.getLocation())) {
                 final ItemStack near = ((Item) e).getItemStack();
                 // Do a rough match as to remove the old type of item
-                if (shop.getItem().getType() == near.getType() && shop.getItem().getDurability() == near.getDurability()) {
+                if (shop.getItem().getType() == near.getType() && shop.getItem().getItemMeta() == near.getItemMeta()) {
                     e.remove();
                     removed = true;
                     if (qs.debug) {

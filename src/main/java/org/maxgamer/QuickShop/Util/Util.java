@@ -119,19 +119,7 @@ public class Util {
         }
     
     }
-    
-    /**
-     * Check if a Material is Transparent to light
-     * @deprecated  use Material#isTransparent() bukkit function
-     * @param m The material to check
-     * @return boolean
-     *
-     */
-    
-    @Deprecated
-    public static boolean isTransparent(Material m) {
-        return m.isTransparent();
-    }
+
     
 
     public static void parseColours(YamlConfiguration config) {
@@ -167,7 +155,8 @@ public class Util {
      * @return The percentage 'health' the tool has. (Opposite of total damage)
      */
     public static String getToolPercentage(ItemStack item) {
-        final double dura = item.getDurability();
+
+        final double dura = ((Damageable)item.getItemMeta()).getDamage() ;
         final double max = item.getType().getMaxDurability();
 
         final DecimalFormat formatter = new DecimalFormat("0");
@@ -244,7 +233,7 @@ public class Util {
         } else if (i.getType().isRecord()) {
             return getRecordName(i.getType());
         } else if (i.getType() == Material.MAP) {
-            return StringTranslator.getName(i) + " #" + i.getDurability();
+            return StringTranslator.getName(i);
         }
         
         return StringTranslator.getName(i);
@@ -259,8 +248,8 @@ public class Util {
             if(meta instanceof MapMeta) {
                 MapMeta mmeta = (MapMeta) meta;
                 result.put("Location", mmeta.getLocationName());
-                MapView map = Bukkit.getMap(i.getDurability());
-                result.put("Scale", map.getScale());
+                result.put("Scaled", mmeta.isScaling());
+                result.put("Colour", mmeta.getColor().serialize());
             }
             break;
         }
@@ -454,8 +443,8 @@ public class Util {
         if (stack1.getType() != stack2.getType()) {
             return false; // Not the same material
         }
-        if (stack1.getDurability() != stack2.getDurability()) {
-            return false; // Not the same durability
+        if(stack1.getItemMeta() != stack2.getItemMeta()){
+            return false;
         }
         if (!stack1.getEnchantments().equals(stack2.getEnchantments())) {
             return false; // They have the same enchants

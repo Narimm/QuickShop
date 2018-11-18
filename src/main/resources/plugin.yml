@@ -1,5 +1,6 @@
 name: QuickShop
 version: ${plugin.version}
+api-version: ${spigot.api.version}
 main: org.maxgamer.QuickShop.QuickShop
 author: Netherfoam
 

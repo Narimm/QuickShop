@@ -201,7 +201,7 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
             for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey() + " "
                         + entries.getValue());
             }
         }
@@ -214,7 +214,7 @@ public class MsgUtil {
                 p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------"
                         + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
                 for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
+                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey()
                             + " " + entries.getValue());
                 }
             }
@@ -236,7 +236,7 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
             for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey() + " "
                         + entries.getValue());
             }
         }
@@ -246,7 +246,7 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------" + MsgUtil.getMessage("menu.stored-enchants")
                     + "--------------------+");
             for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey() + " "
                         + entries.getValue());
             }
         }
@@ -263,7 +263,7 @@ public class MsgUtil {
                     p.sendMessage(ChatColor.DARK_PURPLE + "+-----------------"
                             + MsgUtil.getMessage("menu.stored-enchants") + "--------------------+");
                     for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                        p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
+                        p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey()
                                 + " " + entries.getValue());
                     }
                 }
@@ -302,7 +302,7 @@ public class MsgUtil {
             p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------" + MsgUtil.getMessage("menu.enchants")
                     + "-----------------------+");
             for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName() + " "
+                p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey() + " "
                         + entries.getValue());
             }
         }
@@ -315,7 +315,7 @@ public class MsgUtil {
                 p.sendMessage(ChatColor.DARK_PURPLE + "+--------------------"
                         + MsgUtil.getMessage("menu.stored-enchants") + "-----------------------+");
                 for (final Entry<Enchantment, Integer> entries : enchs.entrySet()) {
-                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getName()
+                    p.sendMessage(ChatColor.DARK_PURPLE + "| " + ChatColor.YELLOW + entries.getKey().getKey()
                             + " " + entries.getValue());
                 }
             }

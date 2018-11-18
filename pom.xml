@@ -8,7 +8,8 @@
 		<build.number />
 		<plugin.version>${project.version}-${build.number}</plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spigot.version>1.13-R0.1-SNAPSHOT</spigot.version>
+		<spigot.api.version>1.13</spigot.api.version>
+		<spigot.version>${spigot.api.version}.2-R0.1-SNAPSHOT</spigot.version>
 	</properties>
 	<scm>
 		<connection>scm:git:git@github.com:AddstarMC/Quickshop.git</connection>
@@ -76,7 +77,7 @@
 		</repository>
         <repository>
             <id>bstats-repo</id>
-            <url>http://repo.bstats.org/content/repositories/releases/</url>
+            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
 	</repositories>
 
@@ -85,7 +86,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>18w15a-R0.1-SNAPSHOT</version>
+			<version>${spigot.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -93,7 +94,7 @@
 		<dependency>
 	      <groupId>net.milkbowl.vault</groupId>
 	      <artifactId>VaultAPI</artifactId>
-	      <version>1.6</version>
+	      <version>1.7</version>
 	      <optional>true</optional>
 			<scope>provided</scope>
 			<exclusions>
@@ -120,12 +121,12 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.2</version>
+            <version>1.4</version>
         </dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>16.0.2</version>
+			<version>16.0.3</version>
 		</dependency>
 	</dependencies>
 
@@ -140,7 +141,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -149,7 +150,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <artifactSet>
                         <includes>
@@ -192,7 +193,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0-M1</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
