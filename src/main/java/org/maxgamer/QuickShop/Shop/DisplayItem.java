@@ -1,8 +1,15 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
+import au.com.addstar.monolith.util.nbtapi.NBTContainer;
+import au.com.addstar.monolith.util.nbtapi.NBTItem;
+import au.com.addstar.monolith.util.nbtapi.NBTReflectionUtil;
+import com.sun.deploy.trace.LoggerTraceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -13,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import org.maxgamer.QuickShop.QuickShop;
+import sun.rmi.runtime.Log;
 
 /**
  * @author Netherfoam
@@ -36,10 +44,33 @@ public class DisplayItem {
      */
     public DisplayItem(Shop shop, ItemStack iStack) {
         this.shop = shop;
+        NBTContainer nItem = NBTItem.convertItemtoNBT(iStack);
+        nItem.setBoolean("quickShop",true);
+        nItem.setObject("qs-Loc",shop.getLocation());
+        iStack = NBTItem.convertNBTtoItem(nItem);
         this.iStack = iStack.clone();
         // this.displayLoc = shop.getLocation().clone().add(0.5, 1.2, 0.5);
     }
 
+    public static boolean isDisplayItem(Item item){
+        NBTContainer nItem = NBTItem.convertItemtoNBT(item.getItemStack());
+        if(nItem.hasKey("quickShop")){
+            Location currentLoc = item.getLocation();
+            if(nItem.hasKey("qs-Loc")) {
+                Location actualLoc = nItem.getObject("qs-Loc", currentLoc.getClass());
+                if (actualLoc.equals(currentLoc))
+                    return true;
+                else {
+                    item.teleport(actualLoc.add(0.5,1.2,0.5));
+                    if (QuickShop.instance.debug) {
+                        Bukkit.getLogger().log(Level.INFO,"QS: Moved item to correct location");
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * Spawns the dummy item on top of the shop.
      */
@@ -54,7 +85,6 @@ public class DisplayItem {
         meta.setDisplayName(ChatColor.RED + "QuickShop ");
         meta.setLore(Collections.singletonList(UUID.randomUUID().toString()));
         iStack.setItemMeta(meta);
-
         item = shop.getLocation().getWorld().dropItem(dispLoc, iStack);
         item.setVelocity(new Vector(0, 0.1, 0));
 
@@ -95,16 +125,18 @@ public class DisplayItem {
             if (item != null && e.getEntityId() == item.getEntityId()) {
                 continue;
             }
+            if(isDisplayItem((Item)e))
+                continue;
             final Location eLoc = e.getLocation().getBlock().getLocation();
 
             if (eLoc.equals(displayLoc) || eLoc.equals(shop.getLocation())) {
                 final ItemStack near = ((Item) e).getItemStack();
                 // Do a rough match as to remove the old type of item
-                if (shop.getItem().getType() == near.getType() && shop.getItem().getItemMeta() == near.getItemMeta()) {
+                if (shop.getItem().getType() == near.getType()) {
                     e.remove();
                     removed = true;
                     if (qs.debug) {
-                        System.out.println("Removed rogue item: " + near.getType());
+                       qs.getLogger().log(Level.INFO,"Removed rogue item: " + near.getType());
                     }
                 }
             }

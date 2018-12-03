@@ -2,6 +2,7 @@ package org.maxgamer.QuickShop.Listeners;
 
 import java.util.HashMap;
 
+import au.com.addstar.monolith.util.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -24,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BlockIterator;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.DisplayItem;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopAction;
@@ -206,7 +208,11 @@ public class PlayerListener implements Listener {
         try {
             if (stack.getItemMeta().getDisplayName().startsWith(ChatColor.RED + "QuickShop ")) {
                 e.setCancelled(true);
+                return;
                 // You shouldn't be able to pick up that...
+            }
+            if(DisplayItem.isDisplayItem(e.getItem())){
+                e.setCancelled(true);
             }
         } catch (final NullPointerException ignored) {} // if meta/displayname/stack
                                                    // is null. We don't really

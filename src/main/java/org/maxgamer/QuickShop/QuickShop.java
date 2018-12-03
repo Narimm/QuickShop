@@ -227,7 +227,7 @@ public class QuickShop extends JavaPlugin {
                 final String useSSL = dbCfg.getString("useSSL","false");
                 Properties props =  new Properties();
                 props.put("user",user);
-                props.put("pass",pass);
+                props.put("password",pass);
                 props.put("useSSL",useSSL);
                 ConfigurationSection dbprops = dbCfg.getConfigurationSection("properties");
                 if(dbprops != null) {

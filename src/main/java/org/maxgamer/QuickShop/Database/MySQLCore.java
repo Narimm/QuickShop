@@ -17,7 +17,7 @@ public class MySQLCore implements DatabaseCore {
         info.put("autoReconnect", "true");
         info.put("useUnicode", "true");
         info.put("characterEncoding", "utf8");
-        info.put("useSSL",false);
+        info.putIfAbsent("useSSL","false");
         this.info = info;
         url = "jdbc:mysql://" + host + ":" + port + "/" + database;
         for (int i = 0; i < MySQLCore.MAX_CONNECTIONS; i++) {
