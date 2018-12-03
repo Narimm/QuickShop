@@ -1,15 +1,11 @@
 package org.maxgamer.QuickShop.Shop;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import au.com.addstar.monolith.util.nbtapi.NBTContainer;
 import au.com.addstar.monolith.util.nbtapi.NBTItem;
-import au.com.addstar.monolith.util.nbtapi.NBTReflectionUtil;
-import com.sun.deploy.trace.LoggerTraceListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -20,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import org.maxgamer.QuickShop.QuickShop;
-import sun.rmi.runtime.Log;
 
 /**
  * @author Netherfoam
