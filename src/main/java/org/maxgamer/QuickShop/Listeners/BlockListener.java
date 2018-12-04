@@ -19,6 +19,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.maxgamer.QuickShop.QuickShop;
+import org.maxgamer.QuickShop.Shop.DisplayItem;
 import org.maxgamer.QuickShop.Shop.Info;
 import org.maxgamer.QuickShop.Shop.Shop;
 import org.maxgamer.QuickShop.Shop.ShopAction;
@@ -139,13 +140,8 @@ public class BlockListener implements Listener {
     
     @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
     private void onHopperPickup(InventoryPickupItemEvent event) {
-        if (isQuickshopItem(event.getItem().getItemStack())) {
+        if (DisplayItem.isDisplayItem(event.getItem())) {
             event.setCancelled(true);
         }
-    }
-    
-    private boolean isQuickshopItem(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        return meta.getDisplayName() != null && meta.getDisplayName().startsWith(ChatColor.RED + "QuickShop ");
     }
 }

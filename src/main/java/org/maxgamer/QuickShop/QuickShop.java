@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -526,5 +527,11 @@ public class QuickShop extends JavaPlugin {
         }
         
         return Bukkit.getOfflinePlayer(taxAccountId);
+    }
+
+    public static void debugMsg(String out){
+        if(QuickShop.instance.debug){
+            QuickShop.instance.getLogger().log(Level.INFO,out);
+        }
     }
 }

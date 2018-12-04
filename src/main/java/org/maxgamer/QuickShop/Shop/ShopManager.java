@@ -286,6 +286,7 @@ public class ShopManager {
             // They wanted to do something.
             final Info info = actions.remove(p.getName());
             if (info == null) {
+                QuickShop.debugMsg("action removed info was null.....");
                 return; // multithreaded means this can happen
             }
             if (info.getLocation().getWorld() != p.getLocation().getWorld()) {

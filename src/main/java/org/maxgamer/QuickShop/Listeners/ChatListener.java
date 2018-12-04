@@ -24,6 +24,7 @@ public class ChatListener implements Listener {
             return;
         }
         plugin.getShopManager().handleChat(e.getPlayer(), e.getMessage());
+        QuickShop.debugMsg("fired chat listener event");
         e.setCancelled(true);
     }
 }
