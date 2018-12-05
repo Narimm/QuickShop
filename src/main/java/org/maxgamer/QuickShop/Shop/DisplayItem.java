@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import au.com.addstar.monolith.util.nbtapi.NBTContainer;
+import au.com.addstar.monolith.util.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -37,13 +39,32 @@ public class DisplayItem {
      */
     public DisplayItem(Shop shop, ItemStack iStack) {
         this.shop = shop;
+        NBTContainer nItem = NBTItem.convertItemtoNBT(iStack);
+        nItem.setBoolean("quickShop",true);
+        nItem.setObject("qs-Loc",shop.getLocation());
+        iStack = NBTItem.convertNBTtoItem(nItem);
         this.iStack = iStack.clone();
         // this.displayLoc = shop.getLocation().clone().add(0.5, 1.2, 0.5);
     }
 
     public static boolean isDisplayItem(Item item){
-        ItemMeta meta = item.getItemStack().getItemMeta();
-        return meta.getDisplayName().contains("QuickShop");
+        NBTContainer nItem = NBTItem.convertItemtoNBT(item.getItemStack());
+        if(nItem.hasKey("quickShop")){
+            Location currentLoc = item.getLocation();
+            if(nItem.hasKey("qs-Loc")) {
+                Location actualLoc = nItem.getObject("qs-Loc", currentLoc.getClass());
+                if (actualLoc.equals(currentLoc))
+                    return true;
+                else {
+                    item.teleport(actualLoc.add(0.5,1.2,0.5));
+                    if (QuickShop.instance.debug) {
+                        Bukkit.getLogger().log(Level.INFO,"QS: Moved item to correct location");
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     /**
      * Spawns the dummy item on top of the shop.
@@ -63,7 +84,7 @@ public class DisplayItem {
         iStack.setItemMeta(meta);
         item = shop.getLocation().getWorld().dropItem(dispLoc, iStack);
         item.setVelocity(new Vector(0, 0.1, 0));
-
+    
         if (QuickShop.instance.debug) {
             System.out.println("Spawned item. Safeguarding.");
         }
